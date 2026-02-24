@@ -2,9 +2,10 @@
 include('includes/db_connect.php');
 include('includes/header.php'); 
 
-// Fetch photos from DB
-$gallery_items = $conn->query("SELECT * FROM gallery ORDER BY created_at DESC");
+// Fetch photos from DB - Simplified query
+$gallery_items = $conn->query("SELECT * FROM gallery ORDER BY id DESC");
 ?>
+
 <section class="bg-white pt-20 pb-10">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-slate-100 pb-10">
@@ -31,7 +32,7 @@ $gallery_items = $conn->query("SELECT * FROM gallery ORDER BY created_at DESC");
             
             <?php 
             $i = 0;
-            if($gallery_items->num_rows > 0):
+            if($gallery_items && $gallery_items->num_rows > 0):
                 while($row = $gallery_items->fetch_assoc()): 
                     $i++;
             ?>
@@ -43,22 +44,22 @@ $gallery_items = $conn->query("SELECT * FROM gallery ORDER BY created_at DESC");
                          class="w-full object-cover transition duration-[1.5s] group-hover:scale-125 group-hover:rotate-1">
                     
                     <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                        <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            <span class="text-orange-500 font-black text-[9px] uppercase tracking-[0.3em]"><?php echo $row['category']; ?></span>
-                            <h4 class="text-white font-black uppercase text-xl italic font-oswald leading-tight mt-1">
-                                <?php echo htmlspecialchars($row['caption']); ?>
-                            </h4>
-                            <div class="flex items-center gap-4 mt-4">
-                                <a href="assets/images/gallery/<?php echo $row['image_path']; ?>" download class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-orange-600 transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                </a>
-                                <span class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">Download HD</span>
+                        <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-between">
+                            <div>
+                                <span class="text-orange-500 font-black text-[9px] uppercase tracking-[0.3em]"><?php echo $row['category']; ?></span>
+                                <p class="text-white/50 text-[8px] uppercase font-bold tracking-widest mt-1">Firozabad Sports Academy</p>
                             </div>
+                            
+                            <a href="assets/images/gallery/<?php echo $row['image_path']; ?>" download class="w-12 h-12 rounded-full bg-white text-navy flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all shadow-xl">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                            </a>
                         </div>
                     </div>
 
                     <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 text-navy text-[8px] font-black uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition duration-500">
-                        <?php echo strtoupper($row['category']); ?> ARCHIVE
+                        <?php echo strtoupper($row['category']); ?>
                     </div>
                 </div>
             </div>
@@ -66,8 +67,8 @@ $gallery_items = $conn->query("SELECT * FROM gallery ORDER BY created_at DESC");
                 endwhile; 
             else:
             ?>
-                <div class="col-span-full py-20 text-center border-4 border-dashed border-slate-100">
-                    <p class="text-slate-300 font-black uppercase italic tracking-widest">No action shots in the vault yet.</p>
+                <div class="col-span-full py-24 text-center border-4 border-dashed border-slate-100">
+                    <p class="text-slate-300 font-black uppercase italic tracking-widest">The vault is currently empty</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -98,38 +99,15 @@ $gallery_items = $conn->query("SELECT * FROM gallery ORDER BY created_at DESC");
     </div>
 </section>
 
-<section class="py-16 bg-white text-center">
-    <div class="container mx-auto px-4">
-        <button class="group flex items-center gap-4 mx-auto text-navy">
-            <span class="h-[1px] w-12 bg-slate-200 group-hover:w-20 group-hover:bg-orange-600 transition-all duration-500"></span>
-            <span class="font-black uppercase text-xs tracking-[0.3em]">Load More Action</span>
-            <span class="h-[1px] w-12 bg-slate-200 group-hover:w-20 group-hover:bg-orange-600 transition-all duration-500"></span>
-        </button>
-    </div>
-</section>
-
 <style>
-/* Masonry Logic for Tailwind */
 .columns-1 { column-count: 1; }
 @media (min-width: 768px) { .columns-2 { column-count: 2; } }
 @media (min-width: 1024px) { .columns-3 { column-count: 3; } }
 @media (min-width: 1280px) { .columns-4 { column-count: 4; } }
-
-.break-inside-avoid {
-    break-inside: avoid;
-}
-
-.font-oswald {
-    font-family: 'Oswald', sans-serif;
-}
-
-.text-navy {
-    color: #001e5f;
-}
-
-.bg-navy {
-    background-color: #001e5f;
-}
+.break-inside-avoid { break-inside: avoid; }
+.font-oswald { font-family: 'Oswald', sans-serif; }
+.text-navy { color: #001e5f; }
+.bg-navy { background-color: #001e5f; }
 </style>
 
 <?php include('includes/footer.php'); ?>

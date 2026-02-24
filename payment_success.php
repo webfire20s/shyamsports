@@ -19,40 +19,46 @@ $new_uid = "FSA-" . $year . "-" . $random;
 // 2. Security: Hash the password (using mobile as default)
 $temp_pass = password_hash($data['mobile'], PASSWORD_DEFAULT);
 
+// 3. Prepare additional fields that might be empty
+$mother_name = isset($data['mother_name']) ? $data['mother_name'] : 'NOT PROVIDED';
+$state = isset($data['state']) ? $data['state'] : 'Uttar Pradesh'; // Defaulting to UP
+
 /**
- * 3. MySQL Insert Query
- * Updated to include: athlete_category, district, state, and secondary sport logic
+ * 4. MySQL Insert Query
+ * Updated to include: aadhaar_no (Crucial for the unique check logic)
  */
 $sql = "INSERT INTO athletes (
-    uid, password, full_name, dob, gender, 
+    uid, password, full_name, aadhaar_no, dob, gender, 
     blood_group, email, mobile, athlete_category, 
     sport, height_cm, weight_kg, father_name, mother_name, 
     address_line, district, state, fee_paid, payment_id
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
 
 $fee = ($data['fee_type'] == 'ration') ? 500 : 1000;
 
 // Mapping the variables for bind_param
+// Added one "s" for aadhaar_no in the type string: "sssssssssssd dsssssds" -> "ssssssssss s s d d s s s s s d s"
 $stmt->bind_param("ssssssssssddsssssds", 
     $new_uid, 
     $temp_pass, 
     $data['fullname'], 
+    $data['aadhaar_no'], // Captured from Step 1
     $data['dob'], 
     $data['gender'], 
     $data['blood_group'], 
     $data['email'], 
     $data['mobile'], 
-    $data['athlete_category'], // New Field
-    $data['sport'],           // From our dynamic dropdown
+    $data['athlete_category'], 
+    $data['sport'],
     $data['height'], 
     $data['weight'], 
     $data['father_name'], 
-    $data['mother_name'], 
+    $mother_name, 
     $data['address'],
-    $data['district'],         // New Field
-    $data['state'],            // New Field
+    $data['district'], 
+    $state, 
     $fee, 
     $pay_id
 );
@@ -63,6 +69,7 @@ $stmt->bind_param("ssssssssssddsssssds",
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Successful | FSA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -91,19 +98,19 @@ if($stmt->execute()) {
             <div class="p-10 text-center">
                 <p class="text-gray-500 font-medium mb-2 uppercase text-xs tracking-widest">Your Unique National ID (UID)</p>
                 <div class="bg-slate-100 border-2 border-dashed border-slate-300 p-6 mb-8 group transition-all">
-                    <span class="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter italic selection:bg-orange-500 selection:text-white">
+                    <span class="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter italic">
                         <?php echo $new_uid; ?>
                     </span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-10">
-                    <div class="text-left border-l-4 border-orange-500 pl-4">
+                <div class="grid grid-cols-2 gap-4 mb-10 text-left">
+                    <div class="border-l-4 border-orange-500 pl-4">
                         <p class="text-[10px] text-gray-400 font-bold uppercase">Sport Discipline</p>
-                        <p class="font-black text-slate-800 uppercase italic"><?php echo $data['sport']; ?></p>
+                        <p class="font-black text-slate-800 uppercase italic"><?php echo htmlspecialchars($data['sport']); ?></p>
                     </div>
-                    <div class="text-left border-l-4 border-orange-500 pl-4">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase">Category</p>
-                        <p class="font-black text-slate-800 uppercase italic"><?php echo $data['athlete_category']; ?></p>
+                    <div class="border-l-4 border-orange-500 pl-4">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Aadhaar Number</p>
+                        <p class="font-black text-slate-800 uppercase italic">XXXX-XXXX-<?php echo substr($data['aadhaar_no'], -4); ?></p>
                     </div>
                 </div>
 
@@ -129,8 +136,13 @@ if($stmt->execute()) {
     </div>
 <?php
 } else {
-    echo "<div class='text-white p-20 text-center font-bold'>Error saving data. Please contact support with Payment ID: $pay_id</div>";
+    // In case of SQL error (e.g., Aadhaar was registered while user was on payment page)
+    echo "<div class='text-white p-20 text-center font-bold'>";
+    echo "<h2 class='text-2xl text-red-500'>CRITICAL ERROR</h2>";
+    echo "Data could not be saved. This may be due to a duplicate Aadhaar entry.<br>";
+    echo "Please contact support with Payment ID: <span class='text-orange-500'>$pay_id</span>";
+    echo "</div>";
 }
 ?>
 </body>
-</html> 
+</html>

@@ -132,16 +132,16 @@
                 <div class="w-48 h-48 rounded-full overflow-hidden border-8 border-slate-50 mb-6 group-hover:border-orange-600 transition duration-500">
                     <img src="assets/images/trustee1.jpg" class="w-full h-full object-cover">
                 </div>
-                <h4 class="text-2xl font-black text-navy uppercase font-oswald tracking-tighter">Chairman Name</h4>
-                <p class="text-orange-600 font-bold uppercase text-[10px] tracking-widest">Managing Trustee</p>
+                <h4 class="text-2xl font-black text-navy uppercase font-oswald tracking-tighter">SHYAMVIR</h4>
+                <p class="text-orange-600 font-bold uppercase text-[10px] tracking-widest">TRUST PRESIDENT</p>
                 <p class="mt-4 text-sm text-gray-500 italic">"A vision to bring world-class facilities to the heart of Uttar Pradesh."</p>
             </div>
             <div class="flex flex-col items-center text-center group">
                 <div class="w-48 h-48 rounded-full overflow-hidden border-8 border-slate-50 mb-6 group-hover:border-orange-600 transition duration-500">
                     <img src="assets/images/trustee2.jpg" class="w-full h-full object-cover">
                 </div>
-                <h4 class="text-2xl font-black text-navy uppercase font-oswald tracking-tighter">Secretary Name</h4>
-                <p class="text-orange-600 font-bold uppercase text-[10px] tracking-widest">Operations Director</p>
+                <h4 class="text-2xl font-black text-navy uppercase font-oswald tracking-tighter">RUBY RAJPUT</h4>
+                <p class="text-orange-600 font-bold uppercase text-[10px] tracking-widest">TRUST SECRETARY</p>
                 <p class="mt-4 text-sm text-gray-500 italic">"Dedicated to the scientific development of underprivileged athletes."</p>
             </div>
         </div>

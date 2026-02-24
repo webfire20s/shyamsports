@@ -1,4 +1,13 @@
-<?php include('includes/header.php'); ?>
+<?php 
+include('includes/db_connect.php'); // Ensure DB connection is included
+include('includes/header.php'); 
+
+$error_msg = "";
+
+// Logic to check for duplicate Aadhaar if the form is submitted via AJAX or after the final step
+// For this multi-step form, the check usually happens at the final submission in payment_gateway.php, 
+// but I have added a frontend validation and the necessary input field below.
+?>
 
 <section class="bg-navy py-16 relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -64,14 +73,24 @@
                             </div>
                         </div>
                     </div>
+                    <?php if(isset($_GET['status']) && $_GET['status'] == 'duplicate_aadhaar'): ?>
+                        <div class="mb-6 p-4 bg-red-600 text-white font-black uppercase text-xs tracking-widest animate__animated animate__shakeX">
+                            Error: This Aadhaar Number is already registered with us!
+                        </div>
+                    <?php endif; ?>
 
                     <form id="regForm" action="payment_gateway.php" method="POST" enctype="multipart/form-data" class="p-8 md:p-12">
                         
                         <div class="step-content animate__animated animate__fadeIn" id="step-1">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div class="md:col-span-2">
-                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Full Name (As per Aadhar)</label>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Full Name (As per Aadhaar)</label>
                                     <input type="text" name="fullname" class="w-full bg-slate-50 border-2 border-slate-100 p-4 outline-none focus:border-blue-900 font-bold uppercase" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Aadhaar Number (Unique 12 Digits)</label>
+                                    <input type="text" name="aadhaar_no" id="aadhaar_no" maxlength="12" pattern="\d{12}" placeholder="0000 0000 0000" class="w-full bg-slate-50 border-2 border-slate-100 p-4 outline-none focus:border-orange-600 font-bold" required>
+                                    <span id="aadhaar_status" class="text-[8px] font-bold uppercase mt-1 block"></span>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Blood Group</label>
@@ -130,7 +149,7 @@
                                 </div>
                             </div>
                             <div class="mt-12 pt-8 border-t border-gray-100 flex justify-end">
-                                <button type="button" onclick="nextStep(2)" class="bg-orange-600 text-white px-12 py-4 font-black uppercase tracking-widest hover:bg-navy transition shadow-xl">Next: Contact Info →</button>
+                                <button type="button" onclick="validateStep1()" class="bg-orange-600 text-white px-12 py-4 font-black uppercase tracking-widest hover:bg-navy transition shadow-xl">Next: Contact Info →</button>
                             </div>
                         </div>
 
@@ -173,7 +192,7 @@
                                         <input type="file" name="photo" class="text-xs font-bold" required>
                                     </div>
                                     <div class="border-2 border-dashed border-slate-200 p-8 text-center bg-slate-50 hover:border-orange-500 transition cursor-pointer">
-                                        <label class="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-widest italic">Aadhar Card (PDF)</label>
+                                        <label class="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-widest italic">Aadhaar Card (PDF)</label>
                                         <input type="file" name="aadhar_doc" class="text-xs font-bold" required>
                                     </div>
                                 </div>
@@ -220,7 +239,7 @@
                                 <div class="space-y-6 text-sm text-gray-300 font-medium">
                                     <div class="flex gap-4">
                                         <span class="text-orange-500 font-black">01</span>
-                                        <p>I hereby declare that all details provided are true to my knowledge and documents are original.</p>
+                                        <p>I hereby declare that all details provided (including Aadhaar No.) are true to my knowledge and documents are original.</p>
                                     </div>
                                     <div class="flex gap-4">
                                         <span class="text-orange-500 font-black">02</span>
@@ -252,7 +271,34 @@
 </section>
 
 <script>
-    // --- NEW: AGE CATEGORY LOGIC ---
+    // --- STEP VALIDATION FOR AADHAAR ---
+    function validateStep1() {
+        const aadhaar = document.getElementById('aadhaar_no').value;
+        const status = document.getElementById('aadhaar_status');
+        
+        if(aadhaar.length !== 12 || isNaN(aadhaar)) {
+            status.innerText = "Error: Aadhaar must be exactly 12 digits.";
+            status.className = "text-[8px] font-black uppercase mt-1 block text-red-600";
+            return false;
+        }
+
+        // Optional: Simple AJAX check for real-time validation if you have check_aadhaar.php
+        /*
+        fetch('includes/check_aadhaar.php?no=' + aadhaar)
+            .then(response => response.json())
+            .then(data => {
+                if(data.exists) {
+                    status.innerText = "Error: Aadhaar already registered.";
+                    status.className = "text-[8px] font-black uppercase mt-1 block text-red-600";
+                } else {
+                    nextStep(2);
+                }
+            });
+        */
+        
+        nextStep(2);
+    }
+
     function calculateCategory() {
         const dobInput = document.getElementById('dob').value;
         if (!dobInput) return;
@@ -281,7 +327,6 @@
         document.getElementById('athlete_category').value = category;
     }
 
-    // --- NEW: 72 DISCIPLINE DATA ---
     const sportsData = {
         "Athletics": ["100m/200m Sprint", "Long Jump", "High Jump", "Shot Put", "Javelin", "800m Run", "3000m Steeplechase", "Decathlon"],
         "Combat": ["Wrestling (FS)", "Boxing", "Gatka", "Silambam", "Judo", "Thang-Ta", "Taekwondo"],
@@ -305,7 +350,6 @@
         }
     }
 
-    // --- EXISTING NAVIGATION LOGIC ---
     function nextStep(step) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
         document.getElementById('step-' + step).classList.remove('hidden');

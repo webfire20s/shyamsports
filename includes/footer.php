@@ -11,13 +11,13 @@
                 Firozabad Sports Academy is the premier hub for scouting raw athletic talent in Uttar Pradesh. We manage 72+ sports disciplines with a focus on Olympic-standard training.
             </p>
             <div class="flex gap-3 pt-2">
-                <a href="#" class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group">
+                <a href="https://www.facebook.com/shyamveer.kumar.980?mibextid=rS40aB7S9Ucbxw6v" class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group">
                     <span class="text-sm font-black group-hover:scale-110 transition">FB</span>
                 </a>
                 <a href="#" class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group">
                     <span class="text-sm font-black group-hover:scale-110 transition">X</span>
                 </a>
-                <a href="https://www.instagram.com/shyamvir.dadda.sports_d_trust_?utm_source=qr&igsh=MWt4dWJjZjVlZ3RmMw==" target="_blank" class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group">
+                <a href="https://www.instagram.com/shyamvir20799?utm_source=qr&igsh=MXFzNGdjdWMwcXdzaw==" target="_blank" class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group">
                     <span class="text-sm font-black group-hover:scale-110 transition">IG</span>
                 </a>
             </div>
@@ -77,7 +77,7 @@
             </h3>
             <div class="w-full h-44 bg-slate-900 border-2 border-white/5 shadow-inner rounded-sm overflow-hidden group">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113824.78255554101!2d78.3376510864326!3d27.15555135118559!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39745d4f3b7f1601%3A0x6b44782b26b3c2e!2sFirozabad%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000" 
+                    src="https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d3549.2380657113426!2d78.42191851!3d27.18025349!3m2!1i1024!2i768!4f13.1!2m1!1sDistirct%20Athletics%20Association%20Firozabad!5e0!3m2!1sen!2sin!4v1771919179422!5m2!1sen!2sin" 
                     width="100%" 
                     height="100%" 
                     style="border:0; filter: grayscale(1) invert(0.9) contrast(1.2);" 

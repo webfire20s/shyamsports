@@ -1,3 +1,4 @@
+<?php include('includes/db_connect.php'); ?>
 <?php include('includes/header.php'); ?>
 
 <div class="bg-blue-950 text-white py-3 border-y border-white/10 relative z-50">
@@ -184,6 +185,44 @@
             </div>
         </div>
         <?php endfor; ?>
+    </div>
+</section>
+<section class="py-24 bg-slate-50">
+    <div class="container mx-auto px-4 text-center mb-16">
+        <span class="text-orange-600 font-black uppercase tracking-[0.3em] text-[10px] mb-2 block">Wall of Fame</span>
+        <h2 class="text-5xl font-black text-blue-950 uppercase tracking-tighter italic inline-block relative font-oswald">
+            Daily <span class="text-slate-400">Champions</span>
+            <span class="absolute -bottom-2 left-0 w-full h-2 bg-orange-600/20"></span>
+        </h2>
+    </div>
+
+    <div class="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <?php 
+        $winners = $conn->query("SELECT * FROM winners ORDER BY id DESC LIMIT 4");
+        if($winners->num_rows > 0):
+            while($win = $winners->fetch_assoc()):
+        ?>
+        <div class="group relative aspect-[3/4] overflow-hidden bg-black cursor-pointer shadow-xl">
+            <img src="<?php echo $win['image_path']; ?>" 
+                 class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+                <span class="text-orange-500 text-[10px] font-black uppercase tracking-widest mb-1">
+                    <?php echo htmlspecialchars($win['event_name']); ?>
+                </span>
+                <p class="text-white font-black text-lg leading-tight uppercase italic">
+                    <?php echo htmlspecialchars($win['winner_name']); ?>
+                </p>
+                <div class="w-8 h-1 bg-orange-600 mt-2 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
+            </div>
+        </div>
+        <?php 
+            endwhile; 
+        else:
+            // Fallback if no winners are uploaded yet
+            echo "<p class='col-span-4 text-center text-slate-400 font-bold uppercase italic tracking-widest'>Champions of the day will appear here.</p>";
+        endif; 
+        ?>
     </div>
 </section>
 

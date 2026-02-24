@@ -106,10 +106,12 @@
         </div>
 
         <div id="mobile-menu" class="hidden md:hidden bg-navy pb-6 px-4">
-            <ul class="text-white space-y-4 font-bold text-sm uppercase pt-4">
+            <ul class="text-white space-y-4 font-bold text-sm uppercase pt-4"> 
                 <li><a href="index.php" class="block py-2 border-b border-white/10">Home</a></li>
                 <li><a href="about.php" class="block py-2 border-b border-white/10">About Us</a></li>
+                <li><a href="gallery.php" class="block py-2 border-b border-white/10">Gallery</a></li>
                 <li><a href="tournaments.php" class="block py-2 border-b border-white/10">Tournaments</a></li>
+                <li><a href="donate.php" class="block py-2 border-b border-white/10">Donate</a></li>
                 <li><a href="contact.php" class="block py-2 border-b border-white/10">Contact</a></li>
             </ul>
         </div>
