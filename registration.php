@@ -1,12 +1,151 @@
 <?php 
-include('includes/db_connect.php'); // Ensure DB connection is included
+include('includes/db_connect.php'); 
 include('includes/header.php'); 
 
 $error_msg = "";
 
-// Logic to check for duplicate Aadhaar if the form is submitted via AJAX or after the final step
-// For this multi-step form, the check usually happens at the final submission in payment_gateway.php, 
-// but I have added a frontend validation and the necessary input field below.
+// --- NEW: UID CARD DISPLAY LOGIC (Triggers after successful registration) ---
+if(isset($_GET['success']) && isset($_GET['id'])) {
+    $athlete_id = mysqli_real_escape_string($conn, $_GET['id']);
+    $query = "SELECT * FROM athletes WHERE id = '$athlete_id'";
+    $result = mysqli_query($conn, $query);
+    $data = mysqli_fetch_assoc($result);
+
+    if($data) {
+        $uid_display = "SDSDT-" . str_pad($data['id'], 4, '0', STR_PAD_LEFT);
+        $name = $data['fullname'];
+        $dob = $data['dob'];
+        $gender = $data['gender'];
+        // Use the uploaded photo if exists, otherwise default
+        $photo_path = !empty($data['photo']) ? $data['photo'] : 'assets/images/default-user.png';
+?>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #id-card-print, #id-card-print * { visibility: visible; }
+            #id-card-print { position: absolute; left: 0; top: 0; width: 100%; display: flex !important; flex-direction: row !important; gap: 20px; justify-content: center; }
+            .no-print { display: none !important; }
+        }
+        .id-card {
+            width: 350px;
+            height: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: 1px solid #d1d5db;
+        }
+        .wave-container {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background: #24333c;
+            clip-path: polygon(0 35%, 100% 0, 100% 100%, 0% 100%);
+            z-index: 1;
+        }
+        .cyan-divider {
+            position: absolute;
+            bottom: 68px;
+            width: 100%;
+            height: 4px;
+            background: #00d4ff;
+            z-index: 2;
+        }
+    </style>
+
+    <section class="py-20 bg-slate-200 min-h-screen animate__animated animate__fadeIn">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-10 no-print">
+                <div class="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-black uppercase tracking-widest text-xs mb-4 shadow-lg">Success: Registration Confirmed</div>
+                <h2 class="text-4xl font-black text-navy italic">ATHLETE <span class="text-orange-600">IDENTITY CARD</span></h2>
+                <p class="text-slate-500 font-bold mt-2">Your unique ID has been generated. Please print or save this card.</p>
+            </div>
+
+            <div id="id-card-print" class="flex flex-col md:flex-row gap-10 justify-center items-center">
+                
+                <div class="id-card shadow-2xl relative bg-white">
+                    <div class="bg-[#24333c] p-2 flex items-center gap-2 relative z-10 border-b-2 border-yellow-500">
+                        <img src="assets/images/logo.png" class="w-10 h-10 bg-white rounded-full p-1">
+                        <div class="text-left">
+                            <h3 class="text-[9px] font-black text-white leading-tight uppercase">Shyamvir Dadda Sports Development Trust</h3>
+                            <p class="text-[6px] text-cyan-400 font-bold">Shekhupur, Block Narkhi, Dist. Firozabad, U.P. 283203</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3 flex gap-4 relative z-10">
+                        <div class="w-20 h-24 border-2 border-slate-200 bg-slate-50 overflow-hidden shadow-inner">
+                            <img src="<?php echo $photo_path; ?>" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-left space-y-1.5 pt-1">
+                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Name</p>
+                            <p class="text-[12px] font-bold text-navy uppercase leading-none"><?php echo $name; ?></p>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <div>
+                                    <p class="text-[8px] font-black text-slate-500 uppercase">DOB</p>
+                                    <p class="text-[10px] font-bold text-navy"><?php echo date('d-m-Y', strtotime($dob)); ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-[8px] font-black text-slate-500 uppercase">Gender</p>
+                                    <p class="text-[10px] font-bold text-navy uppercase"><?php echo $gender; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cyan-divider"></div>
+                    <div class="wave-container"></div>
+                    
+                    <div class="absolute bottom-2 w-full px-3 flex justify-between items-end z-10">
+                        <div class="bg-white px-2 py-1 border border-navy shadow-sm">
+                            <span class="text-[10px] font-black italic text-navy">UID: <?php echo $uid_display; ?></span>
+                        </div>
+                        <div class="text-center pb-1">
+                            <img src="assets/images/signature.png" class="h-5 mx-auto brightness-0 invert opacity-80">
+                            <p class="text-[5px] font-black text-white uppercase tracking-widest">Authorized Signatory</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="id-card shadow-2xl relative flex flex-col justify-between bg-white">
+                    <div class="p-5 text-left">
+                        <h3 class="text-sm font-black text-navy mb-3 italic border-b border-orange-500 inline-block">Terms & Conditions</h3>
+                        <ul class="text-[8px] space-y-1.5 font-bold text-slate-600">
+                            <li>• This card must be carried during all academy trials.</li>
+                            <li>• The card is non-transferable and property of SDSDT.</li>
+                            <li>• Loss of card should be reported immediately to the office.</li>
+                            <li>• Misuse of this card will lead to disqualification.</li>
+                        </ul>
+                    </div>
+
+                    <div class="w-full">
+                        <div class="h-1 bg-cyan-400 w-full"></div>
+                        <div class="bg-[#24333c] p-3 text-center">
+                            <p class="text-[8px] text-white font-bold mb-1">Emergency Contact: +91 9675847376</p>
+                            <p class="text-[7px] text-slate-400 font-medium italic">shyamvirdaddasportsdevelopment@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 no-print flex flex-col md:flex-row gap-4 justify-center">
+                <button onclick="window.print()" class="bg-navy text-white px-10 py-4 font-black uppercase tracking-widest hover:bg-orange-600 transition shadow-xl">
+                    Print / Download PDF
+                </button>
+                <a href="index.php" class="bg-white text-navy border-2 border-navy px-10 py-4 font-black uppercase tracking-widest hover:bg-slate-100 transition">
+                    Return to Home
+                </a>
+            </div>
+        </div>
+    </section>
+
+<?php 
+        include('includes/footer.php');
+        exit(); 
+    }
+}
 ?>
 
 <section class="bg-navy py-16 relative overflow-hidden">
@@ -22,25 +161,50 @@ $error_msg = "";
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             <div class="lg:col-span-4 order-2 lg:order-1">
-                <div class="bg-white p-8 shadow-2xl border-t-8 border-navy sticky top-24">
+                <div class="bg-white p-8 shadow-2xl border-t-8 border-[#001e5f] sticky top-24">
                     <div class="flex items-center gap-4 mb-8">
-                        <div class="bg-navy text-white p-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <div class="bg-[#001e5f] text-white p-3 shadow-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
                         </div>
-                        <h2 class="text-2xl font-black text-blue-900 uppercase italic">Secure Login</h2>
+                        <h2 class="text-2xl font-black text-blue-900 uppercase italic leading-none">Athlete<br><span class="text-orange-600 text-sm tracking-widest not-italic">Secure Login</span></h2>
                     </div>
-                    
+
+                    <?php if(isset($_GET['error'])): ?>
+                        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-600 animate__animated animate__shakeX">
+                            <p class="text-[10px] font-black text-red-600 uppercase tracking-widest">
+                                <?php 
+                                    if($_GET['error'] == 'invalid_credentials') echo "Incorrect Password. Please try again.";
+                                    elseif($_GET['error'] == 'user_not_found') echo "UID not found. Check your Receipt.";
+                                    else echo "Login failed. Please contact support.";
+                                ?>
+                            </p>
+                        </div>
+                    <?php endif; ?>
+
                     <form action="login_process.php" method="POST" class="space-y-6">
                         <div class="group">
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 group-focus-within:text-orange-500 transition">Enter UID</label>
-                            <input type="text" name="uid" placeholder="FSA-2026-XXXX" class="w-full border-b-2 border-gray-100 p-3 focus:border-orange-500 outline-none transition bg-slate-50 font-bold" required>
+                            <input type="text" name="uid" placeholder="FSA-2026-XXXX" 
+                                class="w-full border-b-2 border-gray-100 p-3 focus:border-orange-500 outline-none transition bg-slate-50 font-bold text-navy placeholder:text-gray-300 uppercase" required>
                         </div>
+                        
                         <div class="group">
-                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 group-focus-within:text-orange-500 transition">Password</label>
-                            <input type="password" name="password" class="w-full border-b-2 border-gray-100 p-3 focus:border-orange-500 outline-none transition bg-slate-50 font-bold" required>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 group-focus-within:text-orange-500 transition">Password (Your Mobile No.)</label>
+                            <input type="password" name="password" placeholder="••••••••••" 
+                                class="w-full border-b-2 border-gray-100 p-3 focus:border-orange-500 outline-none transition bg-slate-50 font-bold text-navy" required>
                         </div>
-                        <button type="submit" class="w-full bg-navy text-white font-black py-4 uppercase tracking-widest hover:bg-orange-600 transition shadow-xl">Access Dashboard</button>
-                        <a href="#" class="block text-center text-[10px] font-black text-gray-400 hover:text-navy mt-4 uppercase tracking-widest">Forgot Credentials?</a>
+
+                        <button type="submit" class="w-full bg-[#001e5f] text-white font-black py-4 uppercase tracking-widest hover:bg-orange-600 transition shadow-xl flex items-center justify-center gap-2 group">
+                            Access Dashboard
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                        </button>
+                        
+                        <div class="text-center space-y-2 mt-4">
+                            <a href="#" class="block text-[10px] font-black text-gray-400 hover:text-navy uppercase tracking-widest transition">Forgot Credentials?</a>
+                            <p class="text-[9px] text-slate-300 font-bold uppercase tracking-tighter italic">Default Password is your Registered Mobile Number</p>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -247,7 +411,7 @@ $error_msg = "";
                                     </div>
                                     <div class="flex gap-4">
                                         <span class="text-orange-500 font-black">03</span>
-                                        <p>I agree to abide by the Firozabad Sports Academy Code of Conduct and Anti-Doping regulations.</p>
+                                        <p>I agree to abide by the SHYAMVIR DADDA SPORTS DEVELOPMENT TRUST Code of Conduct and Anti-Doping regulations.</p>
                                     </div>
                                 </div>
                                 <div class="mt-12 pt-10 border-t border-white/10">
@@ -271,7 +435,6 @@ $error_msg = "";
 </section>
 
 <script>
-    // --- STEP VALIDATION FOR AADHAAR ---
     function validateStep1() {
         const aadhaar = document.getElementById('aadhaar_no').value;
         const status = document.getElementById('aadhaar_status');
@@ -281,21 +444,6 @@ $error_msg = "";
             status.className = "text-[8px] font-black uppercase mt-1 block text-red-600";
             return false;
         }
-
-        // Optional: Simple AJAX check for real-time validation if you have check_aadhaar.php
-        /*
-        fetch('includes/check_aadhaar.php?no=' + aadhaar)
-            .then(response => response.json())
-            .then(data => {
-                if(data.exists) {
-                    status.innerText = "Error: Aadhaar already registered.";
-                    status.className = "text-[8px] font-black uppercase mt-1 block text-red-600";
-                } else {
-                    nextStep(2);
-                }
-            });
-        */
-        
         nextStep(2);
     }
 
@@ -307,9 +455,7 @@ $error_msg = "";
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();
         const m = today.getMonth() - dob.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-            age--;
-        }
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) { age--; }
         
         let category = "Senior";
         if (age < 4) category = "Toddler (U-4)";

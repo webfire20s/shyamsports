@@ -11,40 +11,55 @@ if(!isset($_GET['pay_id']) || !isset($_SESSION['reg_data'])) {
 $pay_id = $_GET['pay_id'];
 $data = $_SESSION['reg_data'];
 
+// --- NEW: HANDLE PHOTO UPLOAD BEFORE INSERT ---
+$photo_path = 'assets/images/default-user.png'; // Fallback
+if(isset($_SESSION['reg_files']['photo'])) {
+    $file = $_SESSION['reg_files']['photo'];
+    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $new_name = "athlete_" . time() . "_" . rand(1000, 9999) . "." . $ext;
+    $target = "assets/uploads/photos/" . $new_name;
+    
+    if(move_uploaded_file($file['tmp_name'], $target)) {
+        $photo_path = $target;
+    }
+}
+
 // 1. Generate Professional UID (FSA-2026-XXXX)
 $year = date('Y');
 $random = rand(1000, 9999);
-$new_uid = "FSA-" . $year . "-" . $random;
+$new_uid = "SDSDT-" . $year . "-" . $random;
 
 // 2. Security: Hash the password (using mobile as default)
 $temp_pass = password_hash($data['mobile'], PASSWORD_DEFAULT);
 
-// 3. Prepare additional fields that might be empty
+// 3. Prepare additional fields
 $mother_name = isset($data['mother_name']) ? $data['mother_name'] : 'NOT PROVIDED';
-$state = isset($data['state']) ? $data['state'] : 'Uttar Pradesh'; // Defaulting to UP
+$state = isset($data['state']) ? $data['state'] : 'Uttar Pradesh'; 
 
 /**
  * 4. MySQL Insert Query
- * Updated to include: aadhaar_no (Crucial for the unique check logic)
+ * types: s (string), d (double/decimal), i (integer)
  */
 $sql = "INSERT INTO athletes (
     uid, password, full_name, aadhaar_no, dob, gender, 
     blood_group, email, mobile, athlete_category, 
     sport, height_cm, weight_kg, father_name, mother_name, 
-    address_line, district, state, fee_paid, payment_id
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    address_line, district, state, fee_paid, payment_id, photo
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
 
 $fee = ($data['fee_type'] == 'ration') ? 500 : 1000;
 
-// Mapping the variables for bind_param
-// Added one "s" for aadhaar_no in the type string: "sssssssssssd dsssssds" -> "ssssssssss s s d d s s s s s d s"
-$stmt->bind_param("ssssssssssddsssssds", 
+// CORRECTED BIND PARAM: 21 placeholders = 21 types
+// Type string: s (uid), s (pass), s (name), s (aadhaar), s (dob), s (gender), s (blood), s (email), s (mob), s (cat), s (sport), d (h), d (w), s (f), s (m), s (addr), s (dist), s (state), d (fee), s (payid), s (photo)
+$types = "sssssssssssddsssssdss"; 
+
+$stmt->bind_param($types, 
     $new_uid, 
     $temp_pass, 
     $data['fullname'], 
-    $data['aadhaar_no'], // Captured from Step 1
+    $data['aadhaar_no'], 
     $data['dob'], 
     $data['gender'], 
     $data['blood_group'], 
@@ -60,9 +75,9 @@ $stmt->bind_param("ssssssssssddsssssds",
     $data['district'], 
     $state, 
     $fee, 
-    $pay_id
+    $pay_id,
+    $photo_path
 );
-
 ?>
 
 <!DOCTYPE html>
@@ -78,8 +93,10 @@ $stmt->bind_param("ssssssssssddsssssds",
 
 <?php
 if($stmt->execute()) {
-    // Clear session to prevent duplicate entry on refresh
+    $inserted_id = $conn->insert_id;
+    // Clear session to prevent duplicate entry
     unset($_SESSION['reg_data']);
+    unset($_SESSION['reg_files']);
 ?>
     <div class="container mx-auto min-h-screen flex items-center justify-center p-4">
         <div class="bg-white max-w-2xl w-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden animate__animated animate__zoomIn">
@@ -115,12 +132,9 @@ if($stmt->execute()) {
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="generate_receipt.php?uid=<?php echo $new_uid; ?>" 
-                       class="bg-slate-900 text-white px-10 py-4 font-black uppercase tracking-widest text-sm hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                        Download ID Card
+                    <a href="registration.php?success=1&id=<?php echo $inserted_id; ?>" 
+                       class="bg-orange-600 text-white px-10 py-4 font-black uppercase tracking-widest text-sm hover:bg-slate-900 transition-all flex items-center justify-center gap-2 shadow-xl">
+                        View & Print ID Card
                     </a>
                     <a href="login.php" 
                        class="border-2 border-slate-900 text-slate-900 px-10 py-4 font-black uppercase tracking-widest text-sm hover:bg-slate-900 hover:text-white transition-all">
@@ -136,11 +150,10 @@ if($stmt->execute()) {
     </div>
 <?php
 } else {
-    // In case of SQL error (e.g., Aadhaar was registered while user was on payment page)
     echo "<div class='text-white p-20 text-center font-bold'>";
     echo "<h2 class='text-2xl text-red-500'>CRITICAL ERROR</h2>";
-    echo "Data could not be saved. This may be due to a duplicate Aadhaar entry.<br>";
-    echo "Please contact support with Payment ID: <span class='text-orange-500'>$pay_id</span>";
+    echo "Data could not be saved. " . $conn->error;
+    echo "<br>Contact support with Payment ID: <span class='text-orange-500'>$pay_id</span>";
     echo "</div>";
 }
 ?>

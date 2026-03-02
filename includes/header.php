@@ -65,10 +65,11 @@
             <div class="text-right">
                 <p class="text-[10px] font-black text-gray-400 uppercase">Registered Office</p>
                 <p class="text-xs font-bold text-navy uppercase">Firozabad, Uttar Pradesh</p>
+                <p class="text-xs font-bold text-navy uppercase">shyamvirdaddasportsdevelopment@gmail.com</p>
             </div>
             <div class="bg-navy h-14 w-14 rounded-full flex items-center justify-center text-white shadow-lg">
                 <i class="fas fa-medal"></i>
-                <span class="font-black text-xs">SVDSDT</span>
+                <span class="font-black text-xs">SDSDT</span>
             </div>
         </div>
     </div>

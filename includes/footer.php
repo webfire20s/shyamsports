@@ -10,6 +10,9 @@
             <p class="text-gray-400 text-sm leading-relaxed font-medium">
                 Firozabad Sports Academy is the premier hub for scouting raw athletic talent in Uttar Pradesh. We manage 72+ sports disciplines with a focus on Olympic-standard training.
             </p>
+            
+                
+            
             <div class="flex gap-3 pt-2">
                 <a href="https://www.facebook.com/shyamveer.kumar.980?mibextid=rS40aB7S9Ucbxw6v" class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center hover:bg-orange-600 hover:border-orange-600 transition-all duration-300 group">
                     <span class="text-sm font-black group-hover:scale-110 transition">FB</span>
@@ -88,6 +91,7 @@
             <p class="text-[10px] font-black text-gray-500 uppercase tracking-tighter leading-none">
                 Shekhupur, Firozabad, UP, India
             </p>
+            <a class="text-gray-400 text-sm leading-relaxed font-medium" href="mailto:shyamvirdaddasportsdevelopment@gmail.com">shyamvirdaddasportsdevelopment@gmail.com</a>
         </div>
     </div>
 
@@ -95,7 +99,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4">
                  <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">
-                    © <?php echo date('Y'); ?> SVDSDT. All Systems Go.
+                    © <?php echo date('Y'); ?> SDSDT. All Systems Go.
                 </p>
                 <span class="hidden md:block h-1 w-1 bg-gray-700 rounded-full"></span>
                 <span class="text-[9px] font-black text-orange-600/50 uppercase tracking-widest italic">#KhelneDoFirozabad</span>

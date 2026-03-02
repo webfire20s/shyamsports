@@ -63,11 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="relative border-b-2 border-gray-100 focus-within:border-orange-500 transition-all group">
                             <label class="block text-[10px] font-black uppercase text-gray-400 tracking-widest mb-2 group-focus-within:text-orange-600">Full Name</label>
-                            <input type="text" name="full_name" required placeholder="eg. Aryan Singh" class="w-full pb-4 bg-transparent outline-none text-navy font-bold placeholder:text-gray-200">
+                            <input type="text" name="full_name" required placeholder="Your Name" class="w-full pb-4 bg-transparent outline-none text-navy font-bold placeholder:text-gray-200">
                         </div>
                         <div class="relative border-b-2 border-gray-100 focus-within:border-orange-500 transition-all group">
                             <label class="block text-[10px] font-black uppercase text-gray-400 tracking-widest mb-2 group-focus-within:text-orange-600">Email Address</label>
-                            <input type="email" name="email" required placeholder="eg. aryan@email.com" class="w-full pb-4 bg-transparent outline-none text-navy font-bold placeholder:text-gray-200">
+                            <input type="email" name="email" required placeholder="Your Email Address" class="w-full pb-4 bg-transparent outline-none text-navy font-bold placeholder:text-gray-200">
                         </div>
                     </div>
 
@@ -105,6 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         Main Sports Complex, Sector 4-B,<br>
                         Firozabad, Uttar Pradesh - 283203
                     </p>
+                    <p class="text-gray-500 font-medium text-sm leading-relaxed">Email - shyamvirdaddasportsdevelopment@gmail.com</p>
                 </div>
             </div>
         </div>
@@ -117,22 +118,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="p-12 border-b md:border-b-0 md:border-r border-white/10 group hover:bg-orange-600 transition-all duration-500">
                 <span class="text-orange-500 group-hover:text-white font-black text-xs uppercase tracking-widest mb-10 block underline underline-offset-8">Coaching Cell</span>
                 <p class="text-gray-400 group-hover:text-white/80 text-xs uppercase font-bold tracking-tighter mb-2">Trials & High Performance</p>
-                <h4 class="text-2xl font-black italic font-oswald mb-6 tracking-tight">+91 98XXX XXXXX</h4>
-                <a href="mailto:coach@fsa-firozabad.in" class="text-[10px] font-black uppercase tracking-widest text-orange-500 group-hover:text-white border border-orange-500 group-hover:border-white px-4 py-2">Email Department</a>
+                <h4 class="text-2xl font-black italic font-oswald mb-6 tracking-tight">+91 9675847376</h4>
+                <a href="mailto:shyamvirdaddasportsdevelopment@gmail.com" class="text-[10px] font-black uppercase tracking-widest text-orange-500 group-hover:text-white border border-orange-500 group-hover:border-white px-4 py-2">Email Department</a>
             </div>
             
             <div class="p-12 border-b md:border-b-0 md:border-r border-white/10 group hover:bg-navy transition-all duration-500">
                 <span class="text-orange-500 font-black text-xs uppercase tracking-widest mb-10 block underline underline-offset-8">Admin Wing</span>
                 <p class="text-gray-400 group-hover:text-white/80 text-xs uppercase font-bold tracking-tighter mb-2">UID & Registrations</p>
-                <h4 class="text-2xl font-black italic font-oswald mb-6 tracking-tight">+91 5612 2XXXXX</h4>
-                <a href="mailto:admin@fsa-firozabad.in" class="text-[10px] font-black uppercase tracking-widest text-orange-500 border border-orange-500 px-4 py-2 group-hover:border-white group-hover:text-white">Email Department</a>
+                <h4 class="text-2xl font-black italic font-oswald mb-6 tracking-tight">+91 9259822664</h4>
+                <a href="mailto:shyamvirdaddasportsdevelopment@gmail.com" class="text-[10px] font-black uppercase tracking-widest text-orange-500 border border-orange-500 px-4 py-2 group-hover:border-white group-hover:text-white">Email Department</a>
             </div>
 
             <div class="p-12 group hover:bg-white transition-all duration-500">
                 <span class="text-orange-500 font-black text-xs uppercase tracking-widest mb-10 block underline underline-offset-8">Media Cell</span>
                 <p class="text-gray-400 group-hover:text-gray-500 text-xs uppercase font-bold tracking-tighter mb-2">Press & Archive Access</p>
-                <h4 class="text-2xl font-black italic font-oswald mb-6 tracking-tight group-hover:text-navy">+91 70XXX XXXXX</h4>
-                <a href="mailto:media@fsa-firozabad.in" class="text-[10px] font-black uppercase tracking-widest text-orange-500 border border-orange-500 px-4 py-2 group-hover:border-navy group-hover:text-navy">Email Department</a>
+                <h4 class="text-2xl font-black italic font-oswald mb-6 tracking-tight group-hover:text-navy">+91 9675847376</h4>
+                <a href="mailto:shyamvirdaddasportsdevelopment@gmail.com" class="text-[10px] font-black uppercase tracking-widest text-orange-500 border border-orange-500 px-4 py-2 group-hover:border-navy group-hover:text-navy">Email Department</a>
             </div>
         </div>
     </div>
