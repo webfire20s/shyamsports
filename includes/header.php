@@ -89,7 +89,7 @@
                 <li><a href="disciplines.php" class="nav-link py-6 px-5 block">Discover</a></li>
                 <li class="relative group h-full">
                     <a href="gallery.php" class="nav-link py-6 px-5 block flex items-center gap-1">Gallery <span class="text-[8px] opacity-50 italic">▼</span></a>
-                    <ul class="absolute top-16 left-0 hidden group-hover:block bg-white text-navy w-56 shadow-2xl border-t-4 border-orange-600 animate__animated animate__fadeInUp">
+                    <ul class="absolute top-16 left-0 hidden group-hover:block bg-white text-black w-56 shadow-2xl border-t-4 border-orange-600 animate__animated animate__fadeInUp">
                         <li><a href="news-gallery.php" class="block px-6 py-4 hover:bg-slate-50 hover:text-orange-600 border-b border-gray-100 transition">News Room</a></li>
                         <li><a href="photo-gallery.php" class="block px-6 py-4 hover:bg-slate-50 hover:text-orange-600 transition">Action Photos</a></li>
                     </ul>

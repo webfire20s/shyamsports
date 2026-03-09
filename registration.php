@@ -376,12 +376,12 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                                     <h4 class="font-black text-orange-800 mb-6 uppercase italic tracking-widest">Fee Category Selection</h4>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <label class="flex items-center gap-4 cursor-pointer bg-white p-4 border border-orange-100 shadow-sm">
-                                            <input type="radio" name="fee_type" value="normal" checked onchange="updateFee(1000)" class="h-5 w-5 accent-orange-600">
-                                            <span class="font-black text-navy text-xs uppercase">General (₹1,000)</span>
+                                            <input type="radio" name="fee_type" value="normal" checked onchange="updateFee(100)" class="h-5 w-5 accent-orange-600">
+                                            <span class="font-black text-navy text-xs uppercase">General (₹100)</span>
                                         </label>
                                         <label class="flex items-center gap-4 cursor-pointer bg-white p-4 border border-orange-100 shadow-sm">
-                                            <input type="radio" name="fee_type" value="ration" onchange="updateFee(500)" class="h-5 w-5 accent-orange-600">
-                                            <span class="font-black text-red-600 text-xs uppercase italic">Ration Card (₹500)</span>
+                                            <input type="radio" name="fee_type" value="ration" onchange="updateFee(50)" class="h-5 w-5 accent-orange-600">
+                                            <span class="font-black text-red-600 text-xs uppercase italic">Ration Card (₹50)</span>
                                         </label>
                                     </div>
                                     <div id="rationUpload" class="hidden mt-6 animate__animated animate__pulse">
@@ -418,7 +418,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                                     <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                                         <div class="text-center md:text-left">
                                             <span class="text-[10px] uppercase font-black tracking-widest text-orange-500">Payable Amount:</span>
-                                            <h4 id="finalFee" class="text-6xl font-black tracking-tighter italic">₹1,000</h4>
+                                            <h4 id="finalFee" class="text-6xl font-black tracking-tighter italic">₹100</h4>
                                         </div>
                                         <button type="submit" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-black px-16 py-6 text-xl shadow-2xl transition-all transform hover:scale-105 active:scale-95">PROCEED TO PAYMENT</button>
                                     </div>
@@ -519,7 +519,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
     function updateFee(amount) {
         document.getElementById('finalFee').innerText = '₹' + amount.toLocaleString();
         const rationUpload = document.getElementById('rationUpload');
-        rationUpload.classList.toggle('hidden', amount !== 500);
+        rationUpload.classList.toggle('hidden', amount !== 50);
     }
 </script>
 

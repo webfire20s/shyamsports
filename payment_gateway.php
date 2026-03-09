@@ -25,7 +25,7 @@ if(isset($_FILES['photo'])) { $_SESSION['reg_files']['photo'] = $_FILES['photo']
 if(isset($_FILES['aadhar_doc'])) { $_SESSION['reg_files']['aadhar_doc'] = $_FILES['aadhar_doc']; }
 
 // Standardizing the fee logic
-$amount = ($_POST['fee_type'] == 'ration') ? 500 : 1000;
+$amount = ($_POST['fee_type'] == 'ration') ? 50 : 100;
 
 // Placeholder for your Razorpay Key
 $api_key = "YOUR_RAZORPAY_KEY"; 

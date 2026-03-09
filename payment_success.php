@@ -49,7 +49,7 @@ $sql = "INSERT INTO athletes (
 
 $stmt = $conn->prepare($sql);
 
-$fee = ($data['fee_type'] == 'ration') ? 500 : 1000;
+$fee = ($data['fee_type'] == 'ration') ? 50 : 100;
 
 // CORRECTED BIND PARAM: 21 placeholders = 21 types
 // Type string: s (uid), s (pass), s (name), s (aadhaar), s (dob), s (gender), s (blood), s (email), s (mob), s (cat), s (sport), d (h), d (w), s (f), s (m), s (addr), s (dist), s (state), d (fee), s (payid), s (photo)
