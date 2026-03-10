@@ -334,7 +334,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 mb-2 uppercase tracking-widest">District</label>
-                                    <input type="text" name="district" value="Firozabad" class="w-full border-2 border-slate-200 p-4 bg-gray-200 font-black" readonly>
+                                    <input type="text" name="district" class="w-full border-2 border-slate-100 p-4 bg-gray-50 font-bold" >
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 mb-2 uppercase tracking-widest">Pincode*</label>
