@@ -1,5 +1,5 @@
 <?php
-require('fpdf/fpdf.php');
+require('fpdf.php');
 include('includes/db_connect.php');
 session_start();
 
@@ -41,7 +41,7 @@ if(isset($_GET['uid'])) {
     $pdf->SetFont('Arial','B',9);
     $pdf->Cell(25, 6, 'Receipt No:', 0);
     $pdf->SetFont('Arial','',9);
-    $pdf->Cell(55, 6, 'FSA-REC-' . strtoupper(substr($data['payment_id'], -6)), 0);
+    $pdf->Cell(55, 6, 'SDSDT-' . strtoupper(substr($data['payment_id'], -6)), 0);
     
     $pdf->SetFont('Arial','B',9);
     $pdf->Cell(15, 6, 'Date:', 0);
@@ -98,7 +98,7 @@ if(isset($_GET['uid'])) {
     $pdf->Cell(43, 10, 'Rs. ' . number_format($data['fee_paid'], 2) . '  ', 1, 1, 'R');
     
     // Discount Note
-    if($data['fee_paid'] < 1000) {
+    if($data['fee_paid'] < 100) {
         $pdf->SetFont('Arial','I',7);
         $pdf->SetTextColor(180, 0, 0);
         $pdf->Cell(0, 5, '* Special Category / Ration Card Discount Applied', 0, 1, 'R');

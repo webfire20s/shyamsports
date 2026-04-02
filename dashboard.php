@@ -2,7 +2,7 @@
 session_start();
 include('includes/db_connect.php');
 
-// Security: Kick out users who aren't logged in
+// 🔐 Security Check
 if(!isset($_SESSION['athlete_uid'])) { 
     header("Location: registration.php"); 
     exit(); 
@@ -10,7 +10,7 @@ if(!isset($_SESSION['athlete_uid'])) {
 
 $uid = $_SESSION['athlete_uid'];
 
-// Fetch the full profile from DB to get the ID and Photo
+// Fetch athlete data
 $query = "SELECT * FROM athletes WHERE uid = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $uid);
@@ -23,64 +23,280 @@ include('includes/header.php');
 
 <section class="py-12 bg-slate-50 min-h-screen">
     <div class="container mx-auto px-4">
-        <div class="bg-white shadow-2xl rounded-sm overflow-hidden border-t-8 border-[#001e5f]">
+
+        <!-- 🔷 PROFILE HEADER -->
+        <div class="bg-white shadow-2xl overflow-hidden border-t-8 border-[#001e5f]">
             <div class="p-8 flex flex-col md:flex-row items-center gap-8">
-                <div class="h-32 w-32 bg-gray-200 rounded-full border-4 border-orange-500 overflow-hidden flex items-center justify-center text-4xl font-black text-navy shadow-lg">
+
+                <!-- Profile Image -->
+                <div class="h-32 w-32 rounded-full border-4 border-orange-500 overflow-hidden flex items-center justify-center bg-gray-100 text-4xl font-black text-navy shadow-lg">
                     <?php if(!empty($user['photo'])): ?>
                         <img src="<?php echo $user['photo']; ?>" class="w-full h-full object-cover">
                     <?php else: ?>
-                        <?php echo substr($user['full_name'], 0, 1); ?>
+                        <?php echo strtoupper(substr($user['full_name'], 0, 1)); ?>
                     <?php endif; ?>
                 </div>
-                
+
+                <!-- Basic Info -->
                 <div class="flex-1 text-center md:text-left">
-                    <h2 class="text-3xl font-black text-blue-900 uppercase italic"><?php echo $user['full_name']; ?></h2>
-                    <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">
-                        <?php echo $user['sport']; ?> Athlete | 
-                        <span class="text-orange-600">UID: <?php echo $user['uid']; ?></span> |
-                        Category: <?php echo $user['athlete_category']; ?>
+                    <h2 class="text-3xl font-black text-blue-900 uppercase italic">
+                        <?php echo $user['full_name']; ?>
+                    </h2>
+
+                    <p class="text-gray-500 font-bold uppercase tracking-widest text-xs mt-2">
+                        <?php echo $user['sport'] ?: 'N/A'; ?> Athlete |
+                        UID: <span class="text-orange-600"><?php echo $user['uid']; ?></span> |
+                        Category: <?php echo $user['athlete_category'] ?: 'N/A'; ?>
+                    </p>
+
+                    <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-wider">
+                        Registered on: <?php echo date('d M Y', strtotime($user['registration_date'])); ?>
                     </p>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="generate_receipt.php?uid=<?php echo $user['uid']; ?>" class="bg-[#001e5f] text-white px-6 py-3 font-bold text-xs uppercase hover:bg-orange-600 transition text-center shadow-md">Download Receipt</a>
-                    <a href="logout.php" class="bg-red-600 text-white px-6 py-3 font-bold text-xs uppercase hover:bg-black transition text-center shadow-md">Logout</a>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 border-t bg-gray-50 text-center">
-                <a href="tournaments.php" class="p-10 border-r hover:bg-white transition group border-b md:border-b-0">
-                    <div class="mb-3 text-orange-600 flex justify-center">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    </div>
-                    <h4 class="font-black text-blue-900 group-hover:text-orange-600 uppercase italic">Apply for Tournaments</h4>
-                    <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-wider">View upcoming trials and championships</p>
-                </a>
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="registration.php?success=1&id=<?php echo $user['id']; ?>" 
+                       class="bg-orange-600 text-white px-5 py-2 text-xs font-bold uppercase hover:bg-[#001e5f] transition shadow-md text-center">
+                        View ID Card
+                    </a>
 
-                <a href="registration.php?success=1&id=<?php echo $user['id']; ?>" class="p-10 border-r hover:bg-white transition group border-b md:border-b-0">
-                    <div class="mb-3 text-orange-600 flex justify-center">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h4 class="font-black text-blue-900 group-hover:text-orange-600 uppercase italic">View Identity Card</h4>
-                    <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-wider">Print Official Academy Athlete UID Card</p>
-                </a>
+                    <a href="generate_receipt.php?uid=<?php echo $user['uid']; ?>" 
+                       class="bg-[#001e5f] text-white px-5 py-2 text-xs font-bold uppercase hover:bg-orange-600 transition shadow-md text-center">
+                        Receipt
+                    </a>
 
-                <div class="p-10 hover:bg-white transition group">
-                    <div class="mb-3 text-orange-600 flex justify-center">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <h4 class="font-black text-blue-900 uppercase italic">Training Schedule</h4>
-                    <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-wider">Access your coaching time-table</p>
+                    <a href="logout.php" 
+                       class="bg-red-600 text-white px-5 py-2 text-xs font-bold uppercase hover:bg-black transition shadow-md text-center">
+                        Logout
+                    </a>
                 </div>
+
             </div>
         </div>
 
+        <!-- 🔷 PROFILE DETAILS -->
+        <div class="mt-8 bg-white shadow-xl p-8 border-t-4 border-[#001e5f]">
+
+            <h3 class="text-2xl font-black text-blue-900 uppercase italic mb-8">
+                Athlete Profile
+            </h3>
+            
+
+            <!-- 🔹 PERSONAL DETAILS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm font-bold text-gray-700">
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Full Name</p>
+                    <p><?php echo $user['full_name']; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">UID</p>
+                    <p><?php echo $user['uid']; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Mobile</p>
+                    <p><?php echo $user['mobile']; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Email</p>
+                    <p><?php echo $user['email'] ?? 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">DOB</p>
+                    <p><?php echo date('d-m-Y', strtotime($user['dob'])); ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Gender</p>
+                    <p><?php echo $user['gender']; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Sport</p>
+                    <p><?php echo $user['sport']; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Height / Weight</p>
+                    <p><?php echo $user['height_cm'] ?: '-'; ?> cm / <?php echo $user['weight_kg'] ?: '-'; ?> kg</p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Blood Group</p>
+                    <p><?php echo $user['blood_group'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Father Name</p>
+                    <p><?php echo $user['father_name'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Mother Name</p>
+                    <p><?php echo $user['mother_name'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Address</p>
+                    <p><?php echo $user['address_line'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">District</p>
+                    <p><?php echo $user['district'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">State</p>
+                    <p><?php echo $user['state'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Pincode</p>
+                    <p><?php echo $user['pincode'] ?: 'N/A'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Passport</p>
+                    <p><?php echo $user['passport_number'] ?: 'Not Provided'; ?></p>
+                </div>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase">Fee Paid</p>
+                    <p>₹<?php echo $user['fee_paid']; ?></p>
+                </div>
+
+            </div>
+
+            <!-- 🔹 DOCUMENT SECTION -->
+            <div class="mt-10">
+                <h4 class="text-lg font-black text-orange-600 uppercase mb-6">
+                    Uploaded Documents
+                </h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- PHOTO -->
+                    <div class="bg-slate-50 p-4 text-center border">
+                        <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Photo</p>
+                        <?php if(!empty($user['photo'])): ?>
+                            <img src="<?php echo $user['photo']; ?>" class="w-32 h-32 object-cover mx-auto rounded shadow">
+                        <?php else: ?>
+                            <p class="text-red-500 text-xs">Not Uploaded</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- AADHAAR -->
+                    <div class="bg-slate-50 p-4 text-center border">
+                        <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Aadhaar Document</p>
+                        <?php if(!empty($user['aadhar_doc'])): ?>
+                            <a href="<?php echo $user['aadhar_doc']; ?>" target="_blank"
+                            class="text-blue-600 underline text-sm font-bold">
+                                View Document
+                            </a>
+                        <?php else: ?>
+                            <p class="text-red-500 text-xs">Not Uploaded</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- PASSPORT -->
+                    <div class="bg-slate-50 p-4 text-center border">
+                        <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Passport</p>
+                        <?php if(!empty($user['passport_doc'])): ?>
+                            <a href="<?php echo $user['passport_doc']; ?>" target="_blank"
+                            class="text-blue-600 underline text-sm font-bold">
+                                View Document
+                            </a>
+                        <?php else: ?>
+                            <p class="text-gray-400 text-xs">Not Provided</p>
+                        <?php endif; ?>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 🔷 QUICK ACTIONS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 mt-8 text-center">
+
+            <a href="tournaments.php" class="p-8 bg-white shadow hover:bg-gray-50 transition">
+                <h4 class="font-black text-blue-900 uppercase italic">Tournaments</h4>
+                <p class="text-xs text-gray-400 mt-2">Apply & View Events</p>
+            </a>
+
+            <a href="registration.php?success=1&id=<?php echo $user['id']; ?>" class="p-8 bg-white shadow hover:bg-gray-50 transition">
+                <h4 class="font-black text-blue-900 uppercase italic">ID Card</h4>
+                <p class="text-xs text-gray-400 mt-2">Print / Download</p>
+            </a>
+
+            <div class="p-8 bg-white shadow hover:bg-gray-50 transition">
+                <h4 class="font-black text-blue-900 uppercase italic">Schedule</h4>
+                <p class="text-xs text-gray-400 mt-2">Coming Soon</p>
+            </div>
+
+        </div>
+        
+        <!-- 🔷 CERTIFICATES SECTION -->
+        <div class="mt-8 bg-white shadow-xl p-6 border-t-4 border-green-600">
+
+            <h3 class="text-xl font-black text-blue-900 uppercase italic mb-6">
+                Your Certificates
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <?php
+            $uid = $_SESSION['athlete_uid'];
+
+            $res = mysqli_query($conn, "SELECT * FROM certificates WHERE uid='$uid'");
+
+            if(mysqli_num_rows($res) > 0){
+                while($cert = mysqli_fetch_assoc($res)){
+            ?>
+
+                <div class="p-4 border bg-slate-50 shadow-sm">
+                    <p class="font-bold text-blue-900 uppercase">
+                        <?php echo $cert['certificate_type']; ?>
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Event: <?php echo $cert['event_name']; ?>
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+                        Date: <?php echo date('d M Y', strtotime($cert['event_date'])); ?>
+                    </p>
+
+                    <a href="<?php echo $cert['file_path']; ?>" target="_blank"
+                    class="inline-block mt-3 bg-orange-600 text-white px-4 py-2 text-xs font-bold uppercase hover:bg-[#001e5f] transition">
+                        View / Download
+                    </a>
+                </div>
+
+            <?php 
+                }
+            } else {
+                echo "<p class='text-gray-400 text-sm'>No certificates available yet.</p>";
+            }
+            ?>
+
+            </div>
+        </div>
+
+        <!-- 🔷 STATUS BAR -->
         <div class="mt-8 bg-[#001e5f] p-4 text-center">
-            <p class="text-white font-black uppercase italic tracking-[0.3em] text-[10px]">
-                Registration Status: <span class="text-green-400">Verified & Active</span> | 
-                Next Event: <span class="text-orange-500">Physical Verification (March 15)</span>
+            <p class="text-white font-black uppercase tracking-widest text-xs">
+                Status: <span class="text-green-400">Active</span> |
+                Payment: <span class="text-orange-400">₹<?php echo $user['fee_paid']; ?> Paid</span>
             </p>
         </div>
+
     </div>
 </section>
 

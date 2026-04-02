@@ -18,7 +18,7 @@
                 <i class="fas fa-edit"></i> Manage Tournaments
             </a>
             <a href="winners.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
-                <i class="fas fa-edit"></i> Manage Winners
+                <i class="fas fa-edit"></i> Manage Winners & Certificates
             </a>
             <a href="manage_gallery.php" class="flex items-center gap-3 p-3   hover:bg-white/5 transition">
                 <i class="fas fa-edit"></i> Manage Photo Gallery

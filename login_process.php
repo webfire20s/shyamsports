@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $result->fetch_assoc();
 
         // Verify the hashed password
-        if (password_verify($password, $user['password'])) {
+        if ($password === $user['password']) {
             // Login success! Set session variables
             $_SESSION['athlete_uid'] = $user['uid'];
             $_SESSION['athlete_name'] = $user['full_name'];

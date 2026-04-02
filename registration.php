@@ -13,7 +13,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
 
     if($data) {
         $uid_display = "SDSDT-" . str_pad($data['id'], 4, '0', STR_PAD_LEFT);
-        $name = $data['fullname'];
+        $name = $data['full_name'];
         $dob = $data['dob'];
         $gender = $data['gender'];
         // Use the uploaded photo if exists, otherwise default
@@ -186,7 +186,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                     <form action="login_process.php" method="POST" class="space-y-6">
                         <div class="group">
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 group-focus-within:text-orange-500 transition">Enter UID</label>
-                            <input type="text" name="uid" placeholder="FSA-2026-XXXX" 
+                            <input type="text" name="uid" placeholder="SDSDT-2026-XXXX" 
                                 class="w-full border-b-2 border-gray-100 p-3 focus:border-orange-500 outline-none transition bg-slate-50 font-bold text-navy placeholder:text-gray-300 uppercase" required>
                         </div>
                         

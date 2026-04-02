@@ -57,7 +57,177 @@ $winners = $conn->query("SELECT * FROM winners ORDER BY id DESC");
     <?php include('includes/sidebar.php'); ?>
 
     <main class="flex-1 p-8 md:p-12">
-        
+        <!-- 🔷 CERTIFICATE MANAGEMENT -->
+        <div class="mb-12">
+
+            <!-- HEADER -->
+            <div class="animate__animated animate__fadeInDown mb-8">
+                <span class="bg-green-600 text-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] mb-3 inline-block">
+                    Certificate System
+                </span>
+                <h2 class="text-4xl font-black text-navy uppercase italic font-oswald leading-none">
+                    Generate <span class="text-green-600">Certificates</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <!-- 🔹 GENERATE FORM -->
+                <div class="lg:col-span-4">
+                    <div class="bg-white shadow-xl border-t-4 border-green-600 p-8 sticky top-8">
+
+                        <h3 class="font-oswald text-2xl font-black text-navy uppercase italic mb-6">
+                            Create Certificate
+                        </h3>
+
+                        <form action="generate_certificate.php" method="POST" class="space-y-5">
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Athlete UID
+                                </label>
+                                <input type="text" name="uid" required
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold focus:border-navy outline-none transition">
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Certificate Type
+                                </label>
+                                <select name="type"
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold focus:border-navy outline-none">
+                                    <option value="Participation">Participation</option>
+                                    <option value="Merit">Merit</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Event Name
+                                </label>
+                                <input type="text" name="event_name" required
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold">
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Event Date
+                                </label>
+                                <input type="date" name="event_date" required
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold">
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Venue
+                                </label>
+                                <input type="text" name="venue" required
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold">
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Position
+                                </label>
+                                <input type="text" name="position"
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold">
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+                                    Performance
+                                </label>
+                                <input type="text" name="performance"
+                                    class="w-full border-2 border-slate-100 p-3 text-sm font-bold">
+                            </div>
+
+                            <button type="submit"
+                                class="w-full bg-green-600 text-white text-[10px] font-black uppercase py-4 tracking-[0.2em] hover:bg-navy transition shadow-lg">
+                                Generate Certificate
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 🔹 CERTIFICATE LIST -->
+                <div class="lg:col-span-8">
+
+                    <!-- SEARCH -->
+                    <div class="bg-white shadow-lg p-4 mb-6 border-b-4 border-green-600">
+                        <form method="GET">
+                            <input type="text" name="search" placeholder="Search by UID or Name"
+                                class="w-full border-2 border-slate-100 p-3 text-sm font-bold focus:border-green-600 outline-none">
+                        </form>
+                    </div>
+
+                    <!-- LIST -->
+                    <div class="space-y-4">
+
+                    <?php
+                    $search = $_GET['search'] ?? '';
+
+                    $query = "SELECT c.*, a.full_name 
+                    FROM certificates c
+                    JOIN athletes a ON c.athlete_id = a.id
+                    WHERE a.full_name LIKE '%$search%' OR c.uid LIKE '%$search%'
+                    ORDER BY c.id DESC";
+
+                    $res = mysqli_query($conn, $query);
+
+                    if(mysqli_num_rows($res) > 0):
+                        while($row = mysqli_fetch_assoc($res)):
+                    ?>
+
+                        <div class="bg-white shadow-xl overflow-hidden group hover:translate-x-1 transition-all">
+                            <div class="flex items-center">
+
+                                <div class="flex-1 p-6 border-r border-slate-50">
+                                    <span class="text-[9px] font-black text-green-600 uppercase tracking-widest mb-1 block">
+                                        <?php echo $row['certificate_type']; ?>
+                                    </span>
+
+                                    <h4 class="text-navy font-black uppercase italic font-oswald text-xl leading-tight">
+                                        <?php echo $row['full_name']; ?>
+                                    </h4>
+
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase mt-2">
+                                        UID: <?php echo $row['uid']; ?>
+                                    </p>
+
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">
+                                        <?php echo $row['event_name']; ?>
+                                    </p>
+                                </div>
+
+                                <div class="p-6 flex flex-col gap-2">
+                                    <a href="<?php echo $row['file_path']; ?>" target="_blank"
+                                        class="bg-green-600 text-white px-4 py-2 text-[10px] font-black uppercase hover:bg-navy transition text-center">
+                                        View
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    <?php 
+                        endwhile;
+                    else:
+                    ?>
+
+                        <div class="bg-white p-20 text-center shadow-xl border-b-8 border-slate-200">
+                            <h3 class="font-oswald text-2xl font-black text-slate-400 uppercase italic">
+                                No Certificates Found
+                            </h3>
+                        </div>
+
+                    <?php endif; ?>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>  
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
             <div class="animate__animated animate__fadeInDown">
                 <span class="bg-orange-600 text-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] mb-3 inline-block">Wall of Fame</span>
