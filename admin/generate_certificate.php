@@ -33,51 +33,103 @@ $bg = ($type == 'Merit')
 $pdf->Image($bg, 0, 0, 297, 210);
 
 // 🔥 DYNAMIC TEXT (ADJUST POSITIONS IF NEEDED)
+// 🔥 FONT SETUP
+$pdf->SetTextColor(0,0,0);
 
-// 🔥 PAGE CONSTANTS
-$pageWidth = 297;
-$centerX = $pageWidth / 2;
+// =======================
+// 🔷 DATE & VENUE (TOP LINE)
+// =======================
+$pdf->SetFont('Arial','B',12);
 
-// 🔥 HELPER FUNCTION (PERFECT CENTER + AUTO FIT)
-function centerText($pdf, $text, $y, $fontSize = 20, $style = 'B') {
-    $pdf->SetFont('Arial', $style, $fontSize);
+$pdf->SetXY(95, 82);
+$pdf->Cell(60, 8, date('d-m-Y', strtotime($date)), 0, 0, 'L');
 
-    // Auto shrink if text too long
-    while($pdf->GetStringWidth($text) > 240) {
-        $fontSize -= 1;
-        $pdf->SetFont('Arial', $style, $fontSize);
-    }
+$pdf->SetXY(165, 82);
+$pdf->Cell(80, 8, $venue, 0, 0, 'L');
 
-    $pdf->SetXY(0, $y);
-    $pdf->Cell(297, 10, strtoupper($text), 0, 0, 'C');
+
+// // =======================
+// // 🔷 CERTIFICATE TITLE FIX
+// // =======================
+// $pdf->SetFont('Arial','B',26);
+// $pdf->SetXY(0, 75);
+// $pdf->Cell(297, 10, ($type == 'Merit') ? 'Certificate of Merit' : 'Participation Certificate', 0, 0, 'C');
+
+
+// =======================
+// 🔷 NAME LINE
+// =======================
+$pdf->SetFont('Arial','B',14);
+
+$pdf->SetXY(113, 110);
+$pdf->Cell(120, 8, strtoupper($user['full_name']), 0, 0, 'L');
+
+
+// =======================
+// 🔷 REPRESENTING (SPORT / DISTRICT)
+// =======================
+$pdf->SetFont('Arial','',12);
+
+$pdf->SetXY(245, 110);
+$pdf->Cell(70, 8, $user['district'], 0, 0, 'L');
+
+
+// =======================
+// 🔷 DOB
+// =======================
+$pdf->SetXY(40, 123);
+$pdf->Cell(80, 8, date('d-m-Y', strtotime($user['dob'])), 0, 0, 'L');
+
+
+// =======================
+// 🔷 FATHER NAME
+// =======================
+$pdf->SetXY(188, 123);
+$pdf->Cell(120, 8, $user['father_name'], 0, 0, 'L');
+
+
+// =======================
+// 🔷 POSITION + PERFORMANCE
+// =======================
+$pdf->SetFont('Arial','B',12);
+
+$pdf->SetXY(80, 136);
+$pdf->Cell(40, 8, $position ?: '-', 0, 0, 'C');
+
+$pdf->SetXY(240, 136);
+$pdf->Cell(40, 8, $performance ?: '-', 0, 0, 'C');
+
+
+// =======================
+// 🔷 SPORT NAME
+// =======================
+$pdf->SetXY(60, 148);
+$pdf->Cell(180, 8, strtoupper($user['sport']), 0, 0, 'C');
+
+
+// =======================
+// 🔷 CATEGORY / EVENT LINE
+// =======================
+$pdf->SetFont('Arial','',12);
+
+$pdf->SetXY(60, 162);
+$pdf->Cell(180, 8, $event . " | " . $venue, 0, 0, 'C');
+
+
+// =======================
+// 🔷 PHOTO BOX (TOP RIGHT)
+// =======================
+if(!empty($user['photo']) && file_exists("../" . $user['photo'])){
+    $pdf->Image("../" . $user['photo'], 257, 65, 30, 35);
 }
 
-// 🔥 FORMAT DATA
-$name = $user['full_name'] ?? 'N/A';
-$dob  = !empty($user['dob']) ? date('d F Y', strtotime($user['dob'])) : 'N/A';
-$sport = $user['sport'] ?? 'N/A';
-$pos = $position ?: '-';
-$eventText = $event ?: '';
-$venueText = $venue ?: '';
 
-// 🔥 EXACT ALIGNMENT (TUNED FOR YOUR DESIGN)
-
-// NAME (BIG CENTER)
-centerText($pdf, $name, 92, 28, 'B');
-
-// DOB (SMALL BELOW NAME)
-centerText($pdf, "Date of Birth: $dob", 108, 14, '');
-
-// POSITION (BOLD CENTER)
-centerText($pdf, $pos, 124, 18, 'B');
-
-// SPORT (BOTTOM CENTER)
-centerText($pdf, $sport, 140, 18, 'B');
-
-// EVENT + VENUE (FOOTER LINE)
-$pdf->SetFont('Arial','',12);
-$pdf->SetXY(0, 160);
-$pdf->Cell(297, 10, "$eventText | $venueText", 0, 0, 'C');
+// =======================
+// 🔷 SIGN BOX (BOTTOM RIGHT - OPTIONAL)
+// =======================
+if(!empty($user['photo']) && file_exists("../" . $user['photo'])){
+    $pdf->Image("../" . $user['photo'], 211, 170, 30, 35);
+}
 
 // Save file
 if(!is_dir("../certificates")){
