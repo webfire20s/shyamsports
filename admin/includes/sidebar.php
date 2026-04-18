@@ -5,6 +5,9 @@
             <a href="dashboard.php" class="flex items-center gap-3 p-3 bg-orange-600 rounded shadow-lg transition">
                 <i class="fas fa-chart-line"></i> Dashboard
             </a>
+            <a href="admin_approvals.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
+                <i class="fas fa-users"></i> Approve Athletes
+            </a>
             <a href="athletes.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
                 <i class="fas fa-users"></i> Manage Athletes
             </a>

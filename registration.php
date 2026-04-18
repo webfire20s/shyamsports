@@ -12,7 +12,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
     $data = mysqli_fetch_assoc($result);
 
     if($data) {
-        $uid_display = "SDSDT-" . str_pad($data['id'], 4, '0', STR_PAD_LEFT);
+        $uid_display = "SDSDT-" . str_pad($data['id'], 5, '0', STR_PAD_LEFT);
         $name = $data['full_name'];
         $dob = $data['dob'];
         $gender = $data['gender'];
@@ -420,7 +420,24 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                                             <span class="text-[10px] uppercase font-black tracking-widest text-orange-500">Payable Amount:</span>
                                             <h4 id="finalFee" class="text-6xl font-black tracking-tighter italic">₹100</h4>
                                         </div>
-                                        <button type="submit" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-black px-16 py-6 text-xl shadow-2xl transition-all transform hover:scale-105 active:scale-95">PROCEED TO PAYMENT</button>
+                                        <div class="text-center mb-6">
+                                            <p class="font-bold uppercase text-sm mb-3">Scan & Pay</p>
+                                            <img src="assets/qr.png" alt="QR Code" class="mx-auto w-48 border p-2 shadow">
+                                            <p class="text-xs mt-2 text-gray-500">Pay the registration fee and upload screenshot below</p>
+                                        </div>
+                                        <div class="mt-8 bg-white p-6 border border-gray-200">
+                                            <label class="block text-xs font-black uppercase mb-3">
+                                                Upload Payment Screenshot (Required)
+                                            </label>
+                                            <input type="file" name="payment_screenshot" accept="image/*" required
+                                                class="w-full border-2 border-gray-200 p-3 font-bold">
+                                        </div>
+                                        <button type="button" onclick="document.getElementById('regForm').submit();" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-black px-16 py-6 text-xl shadow-2xl transition-all transform hover:scale-105 active:scale-95">PROCEED TO PAYMENT</button>
+                                        <?php if(isset($_GET['status']) && $_GET['status'] == 'payment_pending'): ?>
+                                        <div class="p-4 bg-yellow-500 text-white font-bold">
+                                            Your registration is submitted. Payment verification is pending. You will be approved soon.
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

@@ -3,12 +3,10 @@ session_start();
 include('includes/db_connect.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize input
-    // Replace your old line 7 with this:
+
     $uid = $conn->real_escape_string($_POST['uid']);
     $password = $_POST['password'];
 
-    // Query to find the athlete
     $sql = "SELECT * FROM athletes WHERE uid = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $uid);
@@ -16,30 +14,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
+
         $user = $result->fetch_assoc();
 
-        // Verify the hashed password
-        if ($password === $user['password']) {
-            // Login success! Set session variables
+        /* ================================
+           🔴 BLOCK UNAPPROVED USERS
+        ================================= */
+        if ($user['payment_status'] !== 'approved') {
+            header("Location: login.php?error=not_approved");
+            exit();
+        }
+
+        /* ================================
+           🔐 PASSWORD VERIFICATION
+        ================================= */
+
+        // Case 1: Hashed password (NEW USERS)
+        if (password_verify($password, $user['password'])) {
+
             $_SESSION['athlete_uid'] = $user['uid'];
             $_SESSION['athlete_name'] = $user['full_name'];
             $_SESSION['athlete_sport'] = $user['sport'];
 
-            // Redirect to a dashboard or profile page
             header("Location: dashboard.php");
             exit();
-        } else {
-            // Password wrong
-            header("Location: registration.php?error=invalid_credentials");
+        }
+
+        // Case 2: Plain password fallback (OLD USERS)
+        else if ($password === $user['password']) {
+
+            // 🔥 Upgrade password to hashed automatically
+            $newHash = password_hash($password, PASSWORD_DEFAULT);
+            $conn->query("UPDATE athletes SET password='$newHash' WHERE id=".$user['id']);
+
+            $_SESSION['athlete_uid'] = $user['uid'];
+            $_SESSION['athlete_name'] = $user['full_name'];
+            $_SESSION['athlete_sport'] = $user['sport'];
+
+            header("Location: dashboard.php");
             exit();
         }
+
+        else {
+            header("Location: login.php?error=invalid_credentials");
+            exit();
+        }
+
     } else {
-        // UID not found
-        header("Location: registration.php?error=user_not_found");
+        header("Location: login.php?error=user_not_found");
         exit();
     }
+
 } else {
-    header("Location: registration.php");
+    header("Location: login.php");
     exit();
 }
 ?>
+
+<?php if(isset($_GET['error']) && $_GET['error'] == 'not_approved'): ?>
+<div class="bg-yellow-500 text-white p-3 font-bold">
+    Your account is pending approval. Please wait.
+</div>
+<?php endif; ?>
