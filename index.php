@@ -167,6 +167,54 @@
         </div>
     </div>
 </section>
+<section class="py-24 bg-white border-y">
+    <div class="container mx-auto px-4 text-center mb-16">
+        <h2 class="text-5xl font-black text-blue-950 uppercase italic tracking-tighter">
+            Athlete <span class="text-orange-600">Documents</span>
+        </h2>
+        <p class="text-gray-400 uppercase tracking-widest text-xs mt-2">
+            Download official forms & guidelines
+        </p>
+    </div>
+
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <?php
+        $docs = $conn->query("SELECT * FROM athlete_docs ORDER BY id DESC LIMIT 6");
+
+        if($docs && $docs->num_rows > 0):
+            while($doc = $docs->fetch_assoc()):
+        ?>
+            <div class="p-6 bg-slate-50 border hover:shadow-xl transition">
+                <h3 class="font-black text-blue-950 uppercase text-lg mb-3">
+                    <?php echo htmlspecialchars($doc['title']); ?>
+                </h3>
+
+                <div class="flex gap-3 mt-4">
+                    
+                    <!-- PREVIEW -->
+                    <a href="<?php echo $doc['file_path']; ?>" target="_blank"
+                       class="flex-1 text-center border border-blue-950 text-blue-950 py-3 text-xs font-black uppercase hover:bg-blue-950 hover:text-white transition">
+                        Preview
+                    </a>
+
+                    <!-- DOWNLOAD -->
+                    <a href="<?php echo $doc['file_path']; ?>" download
+                       class="flex-1 text-center bg-orange-600 text-white py-3 text-xs font-black uppercase hover:bg-blue-950 transition">
+                        Download
+                    </a>
+
+                </div>
+            </div>
+        <?php 
+            endwhile;
+        else:
+        ?>
+            <p class="col-span-3 text-center text-gray-400 uppercase font-bold">
+                No documents available yet.
+            </p>
+        <?php endif; ?>
+    </div>
+</section>
 
 <section class="py-24 bg-white">
     <div class="container mx-auto px-4 text-center mb-16">
@@ -175,19 +223,43 @@
             <span class="absolute -bottom-2 left-0 w-full h-2 bg-orange-600/20"></span>
         </h2>
     </div>
+
     <div class="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <?php for($j=1; $j<=4; $j++): ?>
-        <div class="group relative aspect-[3/4] overflow-hidden bg-black cursor-pointer shadow-xl">
-            <img src="assets/images/news<?php echo $j; ?>.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition duration-1000">
-            <div class="absolute inset-0 bg-gradient-to-t from-orange-600/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
-                <span class="text-white text-[10px] font-black uppercase tracking-widest mb-1">Press Release</span>
-                <p class="text-white font-bold text-sm leading-tight uppercase">Coverage of 2026 National Selection Trials</p>
+        <?php
+        include('includes/db_connect.php');
+
+        $query = "SELECT * FROM academy_news ORDER BY created_at DESC LIMIT 4";
+        $result = mysqli_query($conn, $query);
+
+        if($result && mysqli_num_rows($result) > 0):
+            while($row = mysqli_fetch_assoc($result)):
+        ?>
+            <div class="group relative aspect-[3/4] overflow-hidden bg-black cursor-pointer shadow-xl">
+                <img src="<?php echo $row['image']; ?>" 
+     class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition duration-1000">
+
+                <div class="absolute inset-0 bg-gradient-to-t from-orange-600/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+                    <span class="text-white text-[10px] font-black uppercase tracking-widest mb-1">
+                        <?php echo htmlspecialchars($row['category']); ?>
+                    </span>
+                    <p class="text-white font-bold text-sm leading-tight uppercase">
+                        <?php echo htmlspecialchars($row['title']); ?>
+                    </p>
+                </div>
             </div>
-        </div>
-        <?php endfor; ?>
+        <?php 
+            endwhile;
+        else:
+            // 🔒 FALLBACK (so design never breaks)
+            for($j=1; $j<=4; $j++):
+        ?>
+            <div class="group relative aspect-[3/4] overflow-hidden bg-black cursor-pointer shadow-xl">
+                <img src="assets/images/news<?php echo $j; ?>.jpg" 
+                     class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition duration-1000">
+            </div>
+        <?php endfor; endif; ?>
     </div>
-</section>
-<section class="py-24 bg-slate-50">
+</section><section class="py-24 bg-slate-50">
     <div class="container mx-auto px-4 text-center mb-16">
         <span class="text-orange-600 font-black uppercase tracking-[0.3em] text-[10px] mb-2 block">Wall of Fame</span>
         <h2 class="text-5xl font-black text-blue-950 uppercase tracking-tighter italic inline-block relative font-oswald">

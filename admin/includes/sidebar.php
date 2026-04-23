@@ -11,8 +11,14 @@
             <a href="athletes.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
                 <i class="fas fa-users"></i> Manage Athletes
             </a>
+            <a href="athlete_docs.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
+                <i class="fas fa-edit"></i> Athletics Download
+            </a>
             <a href="donations.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
                 <i class="fas fa-edit"></i> View Donations
+            </a>
+            <a href="academy_news.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
+                <i class="fas fa-edit"></i> Academy In News 
             </a>
             <a href="inquiries.php" class="flex items-center gap-3 p-3 hover:bg-white/5 transition">
                 <i class="fas fa-edit"></i> View Inquiries

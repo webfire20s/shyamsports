@@ -1,33 +1,16 @@
 <?php 
-session_start();
-include('includes/db_connect.php'); // CRITICAL: Need this to save to DB
 include('includes/header.php'); 
 
-// 1. Verify we have the necessary data
-if(!isset($_GET['pay_id']) || !isset($_SESSION['donation_amount'])) {
+// ✅ CHECK REQUIRED DATA
+if(!isset($_GET['txn']) || !isset($_GET['amount']) || !isset($_GET['name'])) {
     header("Location: donate.php");
     exit();
 }
 
-$pay_id = mysqli_real_escape_string($conn, $_GET['pay_id']);
-$amount = $_SESSION['donation_amount'];
-$donor_name = $_SESSION['donor_name'] ?? 'Anonymous';
-$donor_email = $_SESSION['donor_email'] ?? 'N/A';
+$txn = $_GET['txn'];
+$amount = $_GET['amount'];
+$donor_name = $_GET['name'];
 $date = date('Y-m-d H:i:s');
-
-// 2. Save to Database
-$sql = "INSERT INTO donations (donor_name, donor_email, amount, payment_id, transaction_status, created_at) 
-        VALUES (?, ?, ?, ?, 'completed', ?)";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ssdss", $donor_name, $donor_email, $amount, $pay_id, $date);
-$stmt->execute();
-
-// 3. Clear session so refresh doesn't duplicate the "Thank You" logic
-// (Keep $amount and $pay_id in local variables for the HTML below)
-unset($_SESSION['donation_amount']);
-unset($_SESSION['donor_name']);
-unset($_SESSION['donor_email']);
 ?>
 
 <section class="py-20 bg-slate-50 text-center">
@@ -47,7 +30,7 @@ unset($_SESSION['donor_email']);
                 </div>
                 <div class="flex justify-between mb-2 text-sm">
                     <span class="text-gray-400 font-bold uppercase tracking-widest">Transaction ID:</span>
-                    <span class="text-slate-900 font-black"><?php echo $pay_id; ?></span>
+                    <span class="text-slate-900 font-black"><?php echo $txn; ?></span>
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-400 font-bold uppercase tracking-widest">Date:</span>

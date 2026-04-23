@@ -67,7 +67,7 @@
                     <button onclick="setAmount(0)" class="amt-btn border-2 border-gray-100 py-4 font-black text-navy hover:border-orange-500 transition-all uppercase text-xs tracking-widest">Custom</button>
                 </div>
 
-                <form action="donation_gateway.php" method="POST" class="space-y-6">
+                <form action="donation_gateway.php" method="POST" enctype="multipart/form-data" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Full Name / Entity</label>
@@ -82,6 +82,14 @@
                         <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1 block mb-2">Contribution Amount</label>
                         <span class="absolute left-4 bottom-4 font-black text-navy text-2xl">₹</span>
                         <input type="number" id="custom_amt" name="amount" placeholder="0.00" class="w-full p-4 pl-12 border-b-2 border-navy bg-slate-50 outline-none text-2xl font-black text-navy" required>
+                    </div>
+                    <div class="space-y-2 pt-4">
+                        <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">
+                            Upload Payment Screenshot*
+                        </label>
+                        <input type="file" name="payment_proof" 
+                            class="w-full p-4 border-2 border-dashed border-slate-200 bg-slate-50 text-sm font-bold"
+                            required>
                     </div>
                     <button type="submit" class="w-full bg-orange-600 text-white font-black py-6 text-sm uppercase tracking-[0.3em] shadow-xl hover:bg-navy transition-all duration-500 group">
                         Confirm Secure Donation 
@@ -115,6 +123,19 @@
                             </div>
                         </li>
                     </ul>
+                </div>
+                <div class="mt-12 text-center">
+                    <h4 class="text-sm font-black uppercase tracking-widest mb-4 text-orange-500">
+                        Scan & Pay via UPI
+                    </h4>
+
+                    <div class="bg-white p-4 inline-block shadow-lg">
+                        <img src="assets/qr.png" alt="QR Code" class="w-48 h-48 object-contain">
+                    </div>
+
+                    <p class="text-[11px] text-gray-400 mt-4">
+                        After payment, upload the screenshot on the left to complete your donation.
+                    </p>
                 </div>
 
                 <div class="mt-12 bg-white/5 p-6 border border-white/10 italic text-[11px] text-gray-400">
