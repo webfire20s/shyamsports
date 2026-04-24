@@ -40,8 +40,14 @@ if(!$athlete) { echo "Athlete not found."; exit(); }
                 </div>
                 <div class="text-right">
                     <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Status</p>
-                    <span class="bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-2 font-black text-xs uppercase italic">
-                        Verified & Paid
+                    <?php
+                    $status = $athlete['payment_status'];
+
+                    $color = $status == 'approved' ? 'green' : ($status == 'rejected' ? 'red' : 'yellow');
+                    ?>
+
+                    <span class="bg-<?php echo $color; ?>-500/10 text-<?php echo $color; ?>-500 border border-<?php echo $color; ?>-500/20 px-4 py-2 font-black text-xs uppercase italic">
+                        <?php echo strtoupper($status); ?>
                     </span>
                 </div>
             </div>
@@ -120,6 +126,54 @@ if(!$athlete) { echo "Athlete not found."; exit(); }
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="bg-white shadow-xl mt-6 p-8 border-t-4 border-blue-600">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6 border-b pb-2">
+                Documents & Verification
+            </h3>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+                <!-- PHOTO -->
+                <?php if(!empty($athlete['photo'])): ?>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Photo</p>
+                    <img src="../<?php echo $athlete['photo']; ?>" 
+                        class="w-full h-40 object-cover border shadow">
+                </div>
+                <?php endif; ?>
+
+                <!-- PAYMENT PROOF -->
+                <?php if(!empty($athlete['payment_screenshot'])): ?>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Payment Proof</p>
+                    <a href="../<?php echo $athlete['payment_screenshot']; ?>" target="_blank">
+                        <img src="../<?php echo $athlete['payment_screenshot']; ?>" 
+                            class="w-full h-40 object-cover border shadow hover:scale-105 transition">
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <!-- AADHAAR (IF EXISTS) -->
+                <?php if(isset($athlete['aadhar_doc']) && !empty($athlete['aadhar_doc'])): ?>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Aadhaar</p>
+
+                    <?php if(pathinfo($athlete['aadhar_doc'], PATHINFO_EXTENSION) === 'pdf'): ?>
+                        <a href="../<?php echo $athlete['aadhar_doc']; ?>" target="_blank"
+                        class="block bg-slate-900 text-white text-center py-6 font-bold uppercase text-xs">
+                            View PDF
+                        </a>
+                    <?php else: ?>
+                        <a href="../<?php echo $athlete['aadhar_doc']; ?>" target="_blank">
+                            <img src="../<?php echo $athlete['aadhar_doc']; ?>" 
+                                class="w-full h-40 object-cover border shadow">
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+
             </div>
         </div>
         

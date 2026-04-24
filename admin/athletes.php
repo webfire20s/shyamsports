@@ -12,7 +12,8 @@ $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['searc
 $sport_filter = isset($_GET['sport']) ? mysqli_real_escape_string($conn, $_GET['sport']) : '';
 
 // Base Query
-$query = "SELECT * FROM athletes WHERE 1=1";
+// Base Query (ONLY APPROVED USERS)
+$query = "SELECT * FROM athletes WHERE payment_status = 'approved'";
 
 if(!empty($search)) {
     $query .= " AND (full_name LIKE '%$search%' OR uid LIKE '%$search%' OR mobile LIKE '%$search%')";

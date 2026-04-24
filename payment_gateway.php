@@ -139,7 +139,7 @@ if(isset($_FILES['payment_screenshot']) && $_FILES['payment_screenshot']['error'
 }
 
 // 🔹 Generate UID using timestamp + random
-$uid = "SDSDT-" . str_pad($next_id, 5, '0', STR_PAD_LEFT);
+// $uid = "SDSDT-" . str_pad($next_id, 5, '0', STR_PAD_LEFT);
 /* ================================
    🔴 INSERT INTO DATABASE (PENDING)
 ================================ */
@@ -178,7 +178,7 @@ $query = "INSERT INTO athletes (
     '$passport_path',
     '$has_ration',
     '$fee_paid',
-    '$uid',
+    NULL,
     '$payment_path',
     'pending',
     NOW()

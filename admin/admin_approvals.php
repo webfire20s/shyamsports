@@ -4,6 +4,7 @@ session_start();
 if(!isset($_SESSION['admin_id'])) { header("Location: login.php"); exit(); }
 
 include('../includes/db_connect.php');
+include('../includes/send_mail.php');
 include('includes/sidebar.php');
 
 /* ================================
@@ -18,9 +19,31 @@ if(isset($_GET['approve'])){
         $uid = "SDSDT-" . str_pad($id, 5, '0', STR_PAD_LEFT);
         $password = password_hash($user['mobile'], PASSWORD_DEFAULT);
 
-        mysqli_query($conn, "UPDATE athletes 
+        $update = mysqli_query($conn, "UPDATE athletes 
             SET uid='$uid', password='$password', payment_status='approved' 
             WHERE id=$id");
+
+        if($update){
+
+            // 🔔 SEND APPROVAL EMAIL
+            $email = $user['email'];
+            $name = $user['full_name'];
+
+            $subject = "Registration Approved - SHYAMVIR DADDA SPORTS DEVELOPMENT TRUST";
+
+            $message = "
+            <h2>Congratulations $name!</h2>
+            <p>Your registration has been <b>approved</b>.</p>
+            
+            <p><b>Your UID:</b> $uid</p>
+            <p>You can now login using your UID and mobile number.</p>
+
+            <br>
+            <p><b>Firozabad Sports Academy</b></p>
+            ";
+
+            sendAthleteMail($email, $name, $subject, $message);
+        }
 
         header("Location: admin_approvals.php?success=approved");
         exit();
@@ -32,9 +55,34 @@ if(isset($_GET['approve'])){
 ================================ */
 if(isset($_GET['reject'])){
     $id = intval($_GET['reject']);
-    mysqli_query($conn, "UPDATE athletes 
+    $res = mysqli_query($conn, "SELECT * FROM athletes WHERE id = $id");
+    $user = mysqli_fetch_assoc($res);
+
+    $update = mysqli_query($conn, "UPDATE athletes 
         SET payment_status='rejected' 
         WHERE id=$id");
+
+    if($update && $user){
+
+        // 🔔 SEND REJECTION EMAIL
+        $email = $user['email'];
+        $name = $user['full_name'];
+
+        $subject = "Registration Update - FSA ❌";
+
+        $message = "
+        <h2>Hello $name,</h2>
+        <p>We regret to inform you that your registration has been <b>rejected</b>.</p>
+        
+        <p>This may be due to invalid or unclear payment proof.</p>
+        <p>Please re-register or contact support.</p>
+
+        <br>
+        <p><b>Firozabad Sports Academy</b></p>
+        ";
+
+        sendAthleteMail($email, $name, $subject, $message);
+    }
 
     header("Location: admin_approvals.php?success=rejected");
     exit();
@@ -106,8 +154,8 @@ $result = mysqli_query($conn, "SELECT * FROM athletes WHERE payment_status='pend
                             </td>
 
                             <td class="p-5 text-center">
-                                <a href="<?php echo $row['payment_screenshot']; ?>" target="_blank" class="inline-block relative group">
-                                    <img src="<?php echo $row['payment_screenshot']; ?>" 
+                                <a href="../<?php echo $row['payment_screenshot']; ?>" target="_blank" class="inline-block relative group">
+                                    <img src="../<?php echo $row['payment_screenshot']; ?>" 
                                          class="w-20 h-12 object-cover border-2 border-slate-200 group-hover:border-orange-500 transition shadow-sm">
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
                                         <i class="fas fa-search-plus text-white text-xs"></i>

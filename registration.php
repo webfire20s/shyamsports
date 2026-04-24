@@ -28,7 +28,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
         }
         .id-card {
             width: 350px;
-            height: 220px;
+            height: 240px;
             border-radius: 10px;
             overflow: hidden;
             position: relative;
@@ -99,13 +99,30 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                     <div class="wave-container"></div>
                     
                     <div class="absolute bottom-2 w-full px-3 flex justify-between items-end z-10">
+
+                        <!-- UID -->
                         <div class="bg-white px-2 py-1 border border-navy shadow-sm">
-                            <span class="text-[10px] font-black italic text-navy">UID: <?php echo $uid_display; ?></span>
+                            <span class="text-[10px] font-black italic text-navy">
+                                UID: <?php echo $uid_display; ?>
+                            </span>
                         </div>
+
+                        <!-- QR CENTERED -->
+                        <div class="bg-white p-1 border shadow-sm flex items-center justify-center">
+                            <img 
+                                src="https://quickchart.io/qr?size=100&text=<?php echo urlencode('UID:'.$uid_display.'|Name:'.$name); ?>" 
+                                class="w-14 h-14"
+                            >
+                        </div>
+
+                        <!-- SIGNATURE -->
                         <div class="text-center pb-1">
                             <img src="assets/images/signature.png" class="h-5 mx-auto brightness-0 invert opacity-80">
-                            <p class="text-[5px] font-black text-white uppercase tracking-widest">Authorized Signatory</p>
+                            <p class="text-[5px] font-black text-white uppercase tracking-widest">
+                                Authorized Signatory
+                            </p>
                         </div>
+
                     </div>
                 </div>
 
