@@ -56,23 +56,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         else {
-            header("Location: login.php?error=invalid_credentials");
+            header("Location: registration.php?error=invalid_credentials");
             exit();
         }
 
     } else {
-        header("Location: login.php?error=user_not_found");
-        exit();
-    }
+    header("Location: registration.php?error=user_not_found");
+    exit();
+}
 
 } else {
-    header("Location: login.php");
+    header("Location: registration.php");
     exit();
 }
 ?>
 
-<?php if(isset($_GET['error']) && $_GET['error'] == 'not_approved'): ?>
-<div class="bg-yellow-500 text-white p-3 font-bold">
-    Your account is pending approval. Please wait.
-</div>
-<?php endif; ?>
+<?php 
+if($_GET['error'] == 'invalid_credentials') 
+    echo "Incorrect Password. Please try again.";
+
+elseif($_GET['error'] == 'user_not_found') 
+    echo "UID not found. Check your Receipt.";
+
+elseif($_GET['error'] == 'not_approved') 
+    echo "Your account is pending approval. Please wait for admin verification.";
+
+else 
+    echo "Login failed. Please contact support.";
+?>

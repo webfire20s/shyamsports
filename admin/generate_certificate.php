@@ -1,6 +1,7 @@
 <?php
 require('../fpdf.php');
 include('../includes/db_connect.php');
+require('../includes/phpqrcode/qrlib.php');
 
 $uid = $_POST['uid'];
 $type = $_POST['type'];
@@ -127,9 +128,30 @@ if(!empty($user['photo']) && file_exists("../" . $user['photo'])){
 // =======================
 // 🔷 SIGN BOX (BOTTOM RIGHT - OPTIONAL)
 // =======================
-if(!empty($user['photo']) && file_exists("../" . $user['photo'])){
-    $pdf->Image("../" . $user['photo'], 211, 170, 30, 35);
+// =======================
+// 🔷 QR BOX (BOTTOM RIGHT)
+// =======================
+
+// Create temp folder if not exists
+if(!is_dir("../temp_qr")){
+    mkdir("../temp_qr", 0777, true);
 }
+
+// QR content (you can customize this)
+$qrData = "UID: " . $user['uid'] . "\n"
+        . "Name: " . $user['full_name'] . "\n"
+        . "Sport: " . $user['sport'];
+
+// File path
+$qrFile = "../temp_qr/" . $user['uid'] . ".png";
+
+// Generate QR (only if not already exists)
+if(!file_exists($qrFile)){
+    QRcode::png($qrData, $qrFile, QR_ECLEVEL_L, 4);
+}
+
+// Place QR in SAME POSITION as old photo
+$pdf->Image($qrFile, 205, 170, 40, 35);
 
 // Save file
 if(!is_dir("../certificates")){

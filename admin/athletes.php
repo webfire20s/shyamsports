@@ -23,7 +23,7 @@ if(!empty($sport_filter)) {
     $query .= " AND sport = '$sport_filter'";
 }
 
-$query .= " ORDER BY id DESC";
+$query .= " ORDER BY id DESC";   
 $result = $conn->query($query);
 ?>
 
