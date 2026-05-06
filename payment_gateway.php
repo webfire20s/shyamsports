@@ -86,6 +86,38 @@ if(isset($_FILES['aadhar_doc']) && $_FILES['aadhar_doc']['error'] == 0){
 }
 
 /* ================================
+   🔴 HANDLE BIRTH CERTIFICATE (MANDATORY)
+================================ */
+$birth_certificate_path = '';
+
+if(isset($_FILES['birth_certificate']) && $_FILES['birth_certificate']['error'] == 0){
+
+    $upload_dir = "uploads/birth_certificates/";
+
+    if(!is_dir($upload_dir)){
+        mkdir($upload_dir, 0777, true);
+    }
+
+    $ext = strtolower(pathinfo($_FILES['birth_certificate']['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg','jpeg','png','pdf'];
+
+    if(!in_array($ext, $allowed)){
+        die("Invalid birth certificate format");
+    }
+
+    $file_name = "birth_" . time() . "_" . rand(1000,9999) . "." . $ext;
+    $target = $upload_dir . $file_name;
+
+    if(move_uploaded_file($_FILES['birth_certificate']['tmp_name'], $target)){
+        $birth_certificate_path = $target;
+    } else {
+        die("Failed to upload birth certificate");
+    }
+
+} else {
+    die("Birth certificate is required");
+}
+/* ================================
    🔴 HANDLE PASSPORT DOC (OPTIONAL)
 ================================ */
 $passport_path = '';
@@ -150,7 +182,7 @@ $query = "INSERT INTO athletes (
     father_name, mother_name,
     address_line, district, state, pincode,
     passport_number,
-    photo, aadhar_doc, passport_doc,
+    photo, aadhar_doc, birth_certificate, passport_doc,
     has_ration_card, fee_paid,uid,
     payment_screenshot, payment_status,
     registration_date
@@ -175,6 +207,7 @@ $query = "INSERT INTO athletes (
     '$passport',
     '$photo_path',
     '$aadhar_path',
+    '$birth_certificate_path',
     '$passport_path',
     '$has_ration',
     '$fee_paid',

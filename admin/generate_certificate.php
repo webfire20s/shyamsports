@@ -97,7 +97,7 @@ $pdf->SetFont('Arial','B',12);
 $pdf->SetXY(80, 136);
 $pdf->Cell(40, 8, $position ?: '-', 0, 0, 'C');
 
-$pdf->SetXY(240, 136);
+$pdf->SetXY(250, 136);
 $pdf->Cell(40, 8, $performance ?: '-', 0, 0, 'C');
 
 

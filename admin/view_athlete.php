@@ -10,6 +10,43 @@ $result = $conn->query($query);
 $athlete = $result->fetch_assoc();
 
 if(!$athlete) { echo "Athlete not found."; exit(); }
+
+/* ================================
+   🔴 HANDLE DELETE ATHLETE
+================================ */
+if(isset($_POST['delete_id'])){
+
+    $delete_id = mysqli_real_escape_string($conn, $_POST['delete_id']);
+
+    // 🔹 Fetch files to delete from server
+    $res = mysqli_query($conn, "SELECT photo, aadhar_doc, passport_doc, birth_certificate, payment_screenshot FROM athletes WHERE id='$delete_id'");
+    $data = mysqli_fetch_assoc($res);
+
+    if($data){
+
+        $files = [
+            $data['photo'],
+            $data['aadhar_doc'],
+            $data['passport_doc'],
+            $data['birth_certificate'],
+            $data['payment_screenshot']
+        ];
+
+        // 🔹 Delete files safely
+        foreach($files as $file){
+            if(!empty($file) && file_exists("../" . $file)){
+                unlink("../" . $file);
+            }
+        }
+
+        // 🔹 Delete DB record
+        mysqli_query($conn, "DELETE FROM athletes WHERE id='$delete_id'");
+
+        // 🔹 Redirect safely
+        header("Location: athletes.php?deleted=1");
+        exit();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -173,7 +210,24 @@ if(!$athlete) { echo "Athlete not found."; exit(); }
                     <?php endif; ?>
                 </div>
                 <?php endif; ?>
+                <!-- 🆕 BIRTH CERTIFICATE -->
+                <?php if(isset($athlete['birth_certificate']) && !empty($athlete['birth_certificate'])): ?>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Birth Certificate</p>
 
+                    <?php if(strtolower(pathinfo($athlete['birth_certificate'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                        <a href="../<?php echo $athlete['birth_certificate']; ?>" target="_blank"
+                        class="block bg-blue-600 text-white text-center py-6 font-bold uppercase text-xs hover:bg-blue-700 transition">
+                            View PDF
+                        </a>
+                    <?php else: ?>
+                        <a href="../<?php echo $athlete['birth_certificate']; ?>" target="_blank">
+                            <img src="../<?php echo $athlete['birth_certificate']; ?>" 
+                                class="w-full h-40 object-cover border shadow hover:scale-105 transition">
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
         
@@ -184,9 +238,13 @@ if(!$athlete) { echo "Athlete not found."; exit(); }
             <a href="mailto:<?php echo $athlete['email']; ?>" class="bg-blue-600 text-white px-6 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition flex-1 text-center">
                 Contact Athlete
             </a>
-            <button class="bg-red-100 text-red-600 px-6 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition flex-1">
-                Delete Record
-            </button>
+            <form method="POST" onsubmit="return confirm('Are you sure you want to DELETE this athlete? This action cannot be undone.');" class="flex-1">
+                <input type="hidden" name="delete_id" value="<?php echo $athlete['id']; ?>">
+                <button type="submit"
+                    class="w-full bg-red-100 text-red-600 px-6 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-red-600 hover:text-white transition">
+                    Delete Record
+                </button>
+            </form>
         </div>
     </div>
 

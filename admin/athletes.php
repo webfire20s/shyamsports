@@ -37,6 +37,7 @@ $result = $conn->query($query);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-slate-100 flex min-h-screen">
+    
 
     <div class="flex-1 p-10">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">

@@ -80,7 +80,7 @@ $winners = $conn->query("SELECT * FROM winners ORDER BY id DESC");
                             Create Certificate
                         </h3>
 
-                        <form action="generate_certificate.php" method="POST" class="space-y-5">
+                        <form action="certificate_router.php" method="POST" class="space-y-5">
 
                             <div>
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
@@ -98,6 +98,7 @@ $winners = $conn->query("SELECT * FROM winners ORDER BY id DESC");
                                     class="w-full border-2 border-slate-100 p-3 text-sm font-bold focus:border-navy outline-none">
                                     <option value="Participation">Participation</option>
                                     <option value="Merit">Merit</option>
+                                    <option value="District">District Merit Certificate</option>
                                 </select>
                             </div>
 

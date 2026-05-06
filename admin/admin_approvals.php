@@ -75,6 +75,7 @@ if(isset($_GET['reject'])){
         <p>We regret to inform you that your registration has been <b>rejected</b>.</p>
         
         <p>This may be due to invalid or unclear payment proof.</p>
+        <p>This may be due to incomplete documents.</p>
         <p>Please re-register or contact support.</p>
 
         <br>

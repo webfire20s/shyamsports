@@ -108,16 +108,10 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                         </div>
 
                         <!-- QR CENTERED -->
-                        <div class="bg-white p-1 border shadow-sm flex items-center justify-center">
-                            <img 
-                                src="https://quickchart.io/qr?size=100&text=<?php echo urlencode('UID:'.$uid_display.'|Name:'.$name); ?>" 
-                                class="w-14 h-14"
-                            >
-                        </div>
-
+                        
                         <!-- SIGNATURE -->
                         <div class="text-center pb-1">
-                            <img src="assets/images/signature.png" class="h-5 mx-auto brightness-0 invert opacity-80">
+                            <img src="assets/images/signature.png" class="h-10 mx-auto brightness-10 invert opacity-100">
                             <p class="text-[5px] font-black text-white uppercase tracking-widest">
                                 Authorized Signatory
                             </p>
@@ -125,7 +119,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
 
                     </div>
                 </div>
-
+                
                 <div class="id-card shadow-2xl relative flex flex-col justify-between bg-white">
                     <div class="p-5 text-left">
                         <h3 class="text-sm font-black text-navy mb-3 italic border-b border-orange-500 inline-block">Terms & Conditions</h3>
@@ -135,6 +129,12 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                             <li>• Loss of card should be reported immediately to the office.</li>
                             <li>• Misuse of this card will lead to disqualification.</li>
                         </ul>
+                    </div>
+                    <div class="bg-white shadow-sm flex items-end justify-end">
+                        <img 
+                            src="https://quickchart.io/qr?size=100&text=<?php echo urlencode('UID:'.$uid_display.'|Name:'.$name); ?>" 
+                            class="w-14 h-14"
+                        >
                     </div>
 
                     <div class="w-full">
@@ -328,6 +328,10 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Father's Name</label>
                                     <input type="text" name="father_name" class="w-full bg-slate-50 border-2 border-slate-100 p-4 font-bold uppercase">
                                 </div>
+                                <div class="md:col-span-1">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Mother's Name</label>
+                                    <input type="text" name="mother_name" class="w-full bg-slate-50 border-2 border-slate-100 p-4 font-bold uppercase">
+                                </div>
                             </div>
                             <div class="mt-12 pt-8 border-t border-gray-100 flex justify-end">
                                 <button type="button" onclick="validateStep1()" class="bg-orange-600 text-white px-12 py-4 font-black uppercase tracking-widest hover:bg-navy transition shadow-xl">Next: Contact Info →</button>
@@ -376,6 +380,12 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
                                         <label class="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-widest italic">Aadhaar Card (PDF)</label>
                                         <input type="file" name="aadhar_doc" class="text-xs font-bold" required>
                                     </div>
+                                </div>
+                                <div class="border-2 border-dashed border-slate-200 p-8 text-center bg-slate-50 hover:border-orange-500 transition cursor-pointer md:col-span-2">
+                                    <label class="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-widest italic">
+                                        Birth Certificate (PDF/Image) *
+                                    </label>
+                                    <input type="file" name="birth_certificate" class="text-xs font-bold" required>
                                 </div>
 
                                 <div class="bg-blue-900/5 p-8 border-l-8 border-navy">
@@ -505,6 +515,7 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
 
         document.getElementById('categoryLabel').innerText = category;
         document.getElementById('athlete_category').value = category;
+        updateSportList();
     }
 
     const sportsData = {
@@ -514,13 +525,144 @@ if(isset($_GET['success']) && isset($_GET['id'])) {
         "Indigenous": ["Mallakhamb", "Kabbadi", "Kho-Kho", "Lagori", "Atya Patya"],
         "BallGames": ["Badminton", "Cricket", "Football", "Basketball", "Yogasana", "Archery", "Shooting"]
     };
+    const categorySportsData = {
+
+        "Under-6": [
+        "30m Run","Broad Jump","Ball Throw"
+        ],
+
+        "Under-8": [
+        "50m Run","100m Run","Broad Jump","Ball Throw","4×50m Relay"
+        ],
+
+        "Under-10": [
+        "50m Run","100m Run","200m Run","Long Jump","Kids Javelin",
+        "4×50m Relay","4×50m Mixed Relay"
+        ],
+
+        "Under-12": [
+        "60m Run","300m Run","600m Run","Long Jump","High Jump",
+        "1kg Back Throw","Kids Javelin",
+        "4×50m Relay","4×100m Relay"
+        ],
+
+        "Under-14": [
+        "60m","80m Hurdles","600m","800m","1500m","2Km Run",
+        "Long Jump","High Jump","Shot Put","Discus Throw","Javelin Throw",
+
+        "Triathlon A (60M, Long Jump 5 Approach, High Jump)",
+        "Triathlon B (60M, Long Jump 5 Approach, 1kg Back Throw)",
+        "Triathlon C (60M, Long Jump 5 Approach, 600M)"
+        ],
+
+        "Under-16": [
+        "60m","80m Hurdles","600m",
+        "Long Jump (5m Approach)",
+        "High Jump (Scissor Only)",
+        "Shot Put","Discus Throw","Javelin Throw",
+
+        "Pentathlon (60m run, 80m hurdles, long jump, shot put, 600m)",
+
+        "100m","200m","400m",
+        "80m / 100m Hurdles",
+        "800m","1500m","3000m",
+
+        "Long Jump","Triple Jump","High Jump",
+        "Shot Put","Discus Throw","Javelin Throw",
+
+        "4×100m Relay"
+        ],
+
+        "Under-18": [
+        "100m","200m","400m",
+        "800m","1500m","3000m",
+
+        "110m Hurdles (Boys - 0.914m)",
+        "100m Hurdles (Girls - 0.762m)",
+        "400m Hurdles",
+
+        "Shot Put (5kg Boys / 3kg Girls)",
+        "Discus Throw (1.5kg Boys / 1kg Girls)",
+        "Javelin Throw (700g Boys / 500g Girls)",
+        "Hammer Throw",
+
+        "Long Jump","High Jump","Triple Jump","Pole Vault",
+
+        "Race Walk 5000m (Girls)",
+        "Race Walk 10000m (Boys)",
+
+        "Heptathlon (2 Day Event)",
+
+        "Medley Relay (100m x 200m x 300m x 400m)",
+        "4x400m Mixed Relay"
+        ],
+
+        "Under-20": [
+        "100m","200m","400m",
+        "800m","1500m","3000m","5000m","10000m",
+
+        "110m Hurdles (Men)",
+        "100m Hurdles (Women)",
+        "400m Hurdles",
+
+        "Steeplechase (2000m / 3000m)",
+
+        "High Jump","Pole Vault","Long Jump","Triple Jump",
+
+        "Shot Put (6kg Men / 4kg Women)",
+        "Discus (1.75kg Men / 1kg Women)",
+        "Hammer (6kg Men / 4kg Women)",
+        "Javelin (800g Men / 600g Women)",
+
+        "4x100m","4x400m","4x400m Mixed Relay",
+
+        "Decathlon (Men - 2 Day Event)",
+        "Heptathlon (Women - 2 Day Event)",
+
+        "Race Walk 10000m"
+        ],
+
+        "Under-23": [
+        "100m","200m","400m",
+        "800m","1500m","5000m","10000m",
+
+        "110m Hurdles (Men)",
+        "100m Hurdles (Women)",
+        "400m Hurdles",
+        "3000m Steeplechase",
+
+        "High Jump","Pole Vault","Long Jump","Triple Jump",
+
+        "Shot Put","Discus Throw","Hammer Throw","Javelin Throw",
+
+        "Decathlon (Men - 2 Day Event)",
+        "Heptathlon (Women - 2 Day Event)",
+
+        "Race Walk 10000m","Race Walk 20000m"
+        ]
+
+    };
 
     function updateSportList() {
         const group = document.getElementById('sport_group').value;
         const sportSelect = document.getElementById('specific_sport');
+        const category = document.getElementById('athlete_category').value;
+
         sportSelect.innerHTML = '<option value="">Select Specific Sport</option>';
-        
-        if(sportsData[group]) {
+
+        // ✅ PRIORITY: Category-based sports (for Athletics)
+        if (group === "Athletics" && categorySportsData[category]) {
+            categorySportsData[category].forEach(sport => {
+                let opt = document.createElement('option');
+                opt.value = sport;
+                opt.innerHTML = sport;
+                sportSelect.appendChild(opt);
+            });
+            return;
+        }
+
+        // ✅ FALLBACK: Your existing logic (UNCHANGED)
+        if (sportsData[group]) {
             sportsData[group].forEach(sport => {
                 let opt = document.createElement('option');
                 opt.value = sport;
