@@ -42,10 +42,10 @@ $pdf->SetTextColor(0,0,0);
 // =======================
 $pdf->SetFont('Arial','B',12);
 
-$pdf->SetXY(95, 82);
+$pdf->SetXY(80, 83);
 $pdf->Cell(60, 8, date('d-m-Y', strtotime($date)), 0, 0, 'L');
 
-$pdf->SetXY(165, 82);
+$pdf->SetXY(147, 83);
 $pdf->Cell(80, 8, $venue, 0, 0, 'L');
 
 
@@ -85,7 +85,7 @@ $pdf->Cell(80, 8, date('d-m-Y', strtotime($user['dob'])), 0, 0, 'L');
 // =======================
 // 🔷 FATHER NAME
 // =======================
-$pdf->SetXY(188, 123);
+$pdf->SetXY(188, 122);
 $pdf->Cell(120, 8, $user['father_name'], 0, 0, 'L');
 
 
@@ -94,17 +94,17 @@ $pdf->Cell(120, 8, $user['father_name'], 0, 0, 'L');
 // =======================
 $pdf->SetFont('Arial','B',12);
 
-$pdf->SetXY(80, 136);
+$pdf->SetXY(80, 135);
 $pdf->Cell(40, 8, $position ?: '-', 0, 0, 'C');
 
-$pdf->SetXY(250, 136);
+$pdf->SetXY(250, 135);
 $pdf->Cell(40, 8, $performance ?: '-', 0, 0, 'C');
 
 
 // =======================
 // 🔷 SPORT NAME
 // =======================
-$pdf->SetXY(60, 148);
+$pdf->SetXY(60, 146);
 $pdf->Cell(180, 8, strtoupper($user['sport']), 0, 0, 'C');
 
 
@@ -113,7 +113,7 @@ $pdf->Cell(180, 8, strtoupper($user['sport']), 0, 0, 'C');
 // =======================
 $pdf->SetFont('Arial','',12);
 
-$pdf->SetXY(60, 162);
+$pdf->SetXY(60, 159);
 $pdf->Cell(180, 8, $event . " | " . $venue, 0, 0, 'C');
 
 
